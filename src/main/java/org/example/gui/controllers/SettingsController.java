@@ -1,6 +1,8 @@
 package org.example.gui.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -253,6 +255,10 @@ public class SettingsController extends VBox {
         } catch (IOException | NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Config file not found");
+            alert.show();
+        } catch (JsonSyntaxException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Config file is corrupted");
             alert.show();
         } catch (InvalidSettingsException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
