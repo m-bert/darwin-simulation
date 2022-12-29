@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root alignment="CENTER" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <Label text="Wybierz wariant mapy" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="35.0">
+                    <children>
+                        <RadioButton fx:id="globeRadio" mnemonicParsing="false" text="Kula ziemska">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="worldVariant" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="hellPortalRadio" mnemonicParsing="false" text="Piekielny portal" toggleGroup="$worldVariant" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <Label text="Wybierz wariant wzrostu roślin" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="35.0">
+                    <children>
+                        <RadioButton fx:id="grassFieldRadio" mnemonicParsing="false" text="Zalesione równiki">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="plantsVariant" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="toxicCorpseRadio" mnemonicParsing="false" text="Toksyczne trupy" toggleGroup="$plantsVariant" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <Label text="Wybierz wariant mutacji" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="35.0">
+                    <children>
+                        <RadioButton fx:id="randomRadio" mnemonicParsing="false" text="Pełna losowość">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="mutationVariant" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="correctionRadio" mnemonicParsing="false" text="Lekka korekta" toggleGroup="$mutationVariant" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <children>
+                <Label text="Wybierz wariant zachowania" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="35.0">
+                    <children>
+                        <RadioButton fx:id="predestinationRadio" mnemonicParsing="false" text="Pełna predestynacja">
+                            <toggleGroup>
+                                <ToggleGroup fx:id="behaviourVariant" />
+                            </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="madnessRadio" mnemonicParsing="false" text="Nieco szaleństwa" toggleGroup="$behaviourVariant" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" text="Start simulation" />
+    </children>
+</fx:root>
