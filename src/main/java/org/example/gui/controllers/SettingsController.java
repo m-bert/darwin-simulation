@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 
 public class SettingsController extends VBox {
 
+    // Radio buttons for different variants
     @FXML private RadioButton globeRadio;
     @FXML private RadioButton hellPortalRadio;
     @FXML private RadioButton grassFieldRadio;
@@ -22,6 +23,20 @@ public class SettingsController extends VBox {
     @FXML private RadioButton correctionRadio;
     @FXML private RadioButton predestinationRadio;
     @FXML private RadioButton madnessRadio;
+
+    // TextFields for custom configuration
+    @FXML private TextField mapWidthInput;
+    @FXML private TextField mapHeightInput;
+    @FXML private TextField initialPlantsInput;
+    @FXML private TextField plantsEnergyInput;
+    @FXML private TextField plantsGrowthInput;
+    @FXML private TextField initialAnimalsInput;
+    @FXML private TextField stuffedEnergyInput;
+    @FXML private TextField initialEnergyInput;
+    @FXML private TextField reproduceEnergyInput;
+    @FXML private TextField minMutationsInput;
+    @FXML private TextField maxMutationsInput;
+    @FXML private TextField genomeLengthInput;
 
 
     @FXML private Button startButton;
@@ -40,7 +55,5 @@ public class SettingsController extends VBox {
 
     @FXML
     public void startSimulation(){
-        System.out.println(globeRadio.isSelected());
-        System.out.println(hellPortalRadio.isSelected());
     }
 }
