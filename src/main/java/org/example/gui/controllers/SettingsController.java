@@ -27,6 +27,7 @@ import org.example.settings.variants.BehaviourVariant;
 import org.example.settings.variants.MapVariant;
 import org.example.settings.variants.MutationVariant;
 import org.example.settings.variants.PlantsGrowthVariant;
+import org.example.simulation.Simulation;
 
 public class SettingsController extends VBox {
 
@@ -232,9 +233,8 @@ public class SettingsController extends VBox {
             SimulationSettings settings = prepareSettings();
             validateSettings(settings);
 
-            System.out.println(new Gson().toJson(settings));
-
-            System.out.println(settings);
+            Simulation simulation = new Simulation(settings);
+            simulation.show();
         } catch (InvalidSettingsException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(e.getMessage());
@@ -252,6 +252,9 @@ public class SettingsController extends VBox {
             reader.close();
 
             validateSettings(settings);
+
+            Simulation simulation = new Simulation(settings);
+            simulation.show();
         } catch (IOException | NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Config file not found");
