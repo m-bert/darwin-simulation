@@ -1,5 +1,7 @@
 package org.example.utils;
 
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTHEAST,
@@ -11,6 +13,7 @@ public enum MapDirection {
     NORTHWEST;
 
     final private static MapDirection[] directVals = values();
+    private static final Random generator = new Random();
 
     @Override
     public String toString() {
@@ -32,6 +35,10 @@ public enum MapDirection {
 
     public MapDirection previous() {
         return directVals[(this.ordinal()-1 + directVals.length) % directVals.length];
+    }
+
+    public MapDirection randomDirection(){
+        return directVals[generator.nextInt(directVals.length)];
     }
 
     public Vector2D toUnitVector() {
