@@ -63,7 +63,7 @@
                   <ToggleGroup fx:id="behaviourVariant" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="madnessRadio" mnemonicParsing="false" text="A little bit of craziness" toggleGroup="$behaviourVariant" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <RadioButton fx:id="crazinessRadio" mnemonicParsing="false" text="A little bit of craziness" toggleGroup="$behaviourVariant" GridPane.columnIndex="2" GridPane.rowIndex="3" />
          </children>
          <VBox.margin>
             <Insets left="20.0" right="20.0" />
@@ -141,7 +141,10 @@
             <Insets left="20.0" right="20.0" />
          </VBox.margin>
       </GridPane>
-      <HBox alignment="CENTER" prefHeight="35.0" spacing="20.0" />
-      <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" text="Start simulation" />
+      <HBox alignment="CENTER" prefHeight="35.0" spacing="20.0">
+         <children>
+            <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" text="Start simulation" />
+            <Button fx:id="startFromFileButton" mnemonicParsing="false" onAction="#loadConfigFromFile" text="Start with config file" />
+         </children></HBox>
    </children>
 </fx:root>
