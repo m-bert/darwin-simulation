@@ -2,12 +2,13 @@ package org.example.elements;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class Genome {
     private static Random generator = new Random();
     private int genomeLength;
-    public ArrayList<Integer> genomes = new ArrayList<>();
+    public List<Integer> genomes = new ArrayList<>();
     private int currentIndex;
 
     public Genome(int genomeLength) {
@@ -27,9 +28,23 @@ public class Genome {
         return currentGenome;
     }
 
-
     public void mutation(){
 
     }
 
+    public List<Integer> getLeftGenomePart(int index){
+        return genomes.subList(0, index);
+    }
+
+    public List<Integer> getRightGenomePart(int index){
+        return genomes.subList(index, genomeLength);
+    }
+
+    public List<Integer> getGenomes() {
+        return genomes;
+    }
+
+    public void setGenomes(List<Integer> genomes) {
+        this.genomes = genomes;
+    }
 }

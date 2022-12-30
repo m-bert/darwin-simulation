@@ -5,6 +5,8 @@ import org.example.utils.MapDirection;
 import org.example.utils.Vector2D;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Animal extends AbstractMapElement{
 
@@ -14,6 +16,7 @@ public class Animal extends AbstractMapElement{
     public int stuffedEnergy;
     public int moveEnergy;
     public int childrenNum;
+    public int genomeLength;
     public Genome genome;
     public boolean isAlive;
     public MapDirection direction = MapDirection.NORTH;
@@ -28,10 +31,11 @@ public class Animal extends AbstractMapElement{
         this.isAlive = true;
         this.lifeDays = 0;
         this.childrenNum = 0;
+        this.genomeLength = genomeLength;
         // get genomeLength from settings
         this.genome = new Genome(genomeLength);
         // only first generation of animal have init energy from settings
-        // juveniles will have init energy as reproduction energy from parrents
+        // juveniles will have init energy as reproduction energy from parents
         this.initialEnergy = initialEnergy;
         // ready to reproduce energy
         this.stuffedEnergy = stuffedEnergy;
@@ -39,7 +43,6 @@ public class Animal extends AbstractMapElement{
         this.reproduceEnergy = reproduceEnergy;
         this.moveEnergy = moveEnergy;
 
-        // first animal random genome, juveniles genome from mutation
         genome.randomGenome();
     }
 
@@ -58,7 +61,9 @@ public class Animal extends AbstractMapElement{
 
     public void move(){
         initialEnergy -= moveEnergy;
-        if(initialEnergy < 0){
+        increaseAge();
+        if(initialEnergy <= 0){
+            // usunac niezywe zwierzeta w klasie map
             isAlive = false;
         }
         else {
@@ -70,6 +75,80 @@ public class Animal extends AbstractMapElement{
         }
     }
 
+    public Animal reproduce(Animal other){
+        if(this.getEnergy() < this.stuffedEnergy ||
+           other.getEnergy() < other.stuffedEnergy){
+            return null;
+        }
+        // initial child energy from parents reproduction
+        int childEnergy = this.reproduceEnergy + other.reproduceEnergy;
+        this.energyReproduceChange();
+        other.energyReproduceChange();
+
+        Animal child = new Animal(position, genomeLength, childEnergy, stuffedEnergy, reproduceEnergy, moveEnergy);
+        child.setGenome(genomeDivide(other));
+
+        return child;
+    }
+
+    public Genome genomeDivide(Animal other){
+        int totalEnergy = this.getEnergy() + other.getEnergy();
+        int thisGenomePartLen = (int) (this.genomeLength*((float) this.getEnergy()/totalEnergy));
+        int otherGenomePartLen = genomeLength - thisGenomePartLen;
+
+        Genome childGenome = new Genome(genomeLength);
+
+        // 0 - left part of stronger Animal
+        // 1 - right part of stronger Animal
+        Random rand = new Random();
+        int side = rand.nextInt() % 2;
+        List<Integer> newGenome = new ArrayList<>();
+
+        if(side == 0 && this.getEnergy() > other.getEnergy()){
+            List<Integer> firstPart = this.genome.getLeftGenomePart(thisGenomePartLen);
+            List<Integer> secondPart = other.genome.getRightGenomePart(thisGenomePartLen);
+            newGenome.addAll(firstPart);
+            newGenome.addAll(secondPart);
+        }
+        else if(side == 1 && this.getEnergy() > other.getEnergy()){
+            List<Integer> firstPart = other.genome.getLeftGenomePart(otherGenomePartLen);
+            List<Integer> secondPart = this.genome.getRightGenomePart(otherGenomePartLen);
+            newGenome.addAll(firstPart);
+            newGenome.addAll(secondPart);
+        } else if (side == 0 && this.getEnergy() <= other.getEnergy()) {
+            List<Integer> firstPart = other.genome.getLeftGenomePart(6);
+            List<Integer> secondPart = this.genome.getRightGenomePart(6);
+            newGenome.addAll(firstPart);
+            newGenome.addAll(secondPart);
+        } else {
+            List<Integer> firstPart = this.genome.getLeftGenomePart(2);
+            List<Integer> secondPart = other.genome.getRightGenomePart(2);
+            newGenome.addAll(firstPart);
+            newGenome.addAll(secondPart);
+        }
+
+        childGenome.setGenomes(newGenome);
+        return childGenome;
+    }
+
+    public void setGenome(Genome genome) {
+        this.genome = genome;
+    }
+
+    public void energyReproduceChange(){
+        initialEnergy -= reproduceEnergy;
+        if(initialEnergy <= 0){
+            isAlive = false;
+        }
+    }
+
+    public void eat(int eatEnergy){
+        initialEnergy += eatEnergy;
+    }
+
+    public void increaseAge(){
+        lifeDays += 1;
+    }
 
     public String toString() {
         return direction.toString();
@@ -90,16 +169,20 @@ public class Animal extends AbstractMapElement{
     @Override
     public String getPath() {
         return switch (getDirection()) {
-            case NORTH -> "src/main/resources/up.png";
-            case NORTHEAST -> "src/main/resources/rightup.png";
-            case EAST -> "src/main/resources/right.png";
-            case SOUTHEAST -> "src/main/resources/rightdown.png";
-            case SOUTH -> "src/main/resources/down.png";
-            case SOUTHWEST -> "src/main/resources/leftdown.png";
-            case WEST -> "src/main/resources/left.png";
-            case NORTHWEST -> "src/main/resources/leftup.png";
+            case NORTH -> "src/main/resources/gfx/up.png";
+            case NORTHEAST -> "src/main/resources/gfx/rightup.png";
+            case EAST -> "src/main/resources/gfx/right.png";
+            case SOUTHEAST -> "src/main/resources/gfx/rightdown.png";
+            case SOUTH -> "src/main/resources/gfx/down.png";
+            case SOUTHWEST -> "src/main/resources/gfx/leftdown.png";
+            case WEST -> "src/main/resources/gfx/left.png";
+            case NORTHWEST -> "src/main/resources/gfx/leftup.png";
         };
-
     }
+
+    public int getEnergy(){
+        return initialEnergy;
+    }
+
 }
 
