@@ -1,5 +1,6 @@
 package org.example.elements;
 
+import org.example.maps.IMap;
 import org.example.settings.variants.BehaviourVariant;
 import org.example.settings.variants.MutationVariant;
 import org.example.utils.IPositionChangeObserver;
@@ -8,10 +9,11 @@ import org.example.utils.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class Animal extends AbstractMapElement{
-
+    private final int id;
     private MutationVariant mutationVariant;
     private BehaviourVariant behaviourVariant;
     private Random random = new Random();
@@ -25,11 +27,14 @@ public class Animal extends AbstractMapElement{
     private Genome genome;
     private boolean isAlive;
     private MapDirection direction;
-    private final ArrayList<IPositionChangeObserver> observers;
+    private final ArrayList<IPositionChangeObserver> observers; //TODO: can be one observer?
 
-    public Animal(Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy, MutationVariant mutationVariant, BehaviourVariant behaviourVariant) {
+    private final IMap map;
+
+    public Animal(int id, Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy, MutationVariant mutationVariant, BehaviourVariant behaviourVariant, IMap map) {
         // initial position for animal
         super(position);
+        this.id = id;
         this.direction = MapDirection.randomDirection();
         this.observers = new ArrayList<>();
         // when animal is dead - set false
@@ -49,12 +54,14 @@ public class Animal extends AbstractMapElement{
         this.reproduceEnergy = reproduceEnergy;
         this.moveEnergy = moveEnergy;
 
+        this.map = map;
+
         genome.createRandomGenome();
     }
 
     private void positionChanged(Vector2D oldPosition, Vector2D newPosition) {
         for (IPositionChangeObserver observer : observers) {
-            observer.positionChanged(oldPosition, newPosition);
+            observer.positionChanged(this, oldPosition, newPosition);
         }
     }
 
@@ -72,6 +79,10 @@ public class Animal extends AbstractMapElement{
         if(initialEnergy <= 0){
             // usunac niezywe zwierzeta w klasie map
             isAlive = false;
+
+            for(IPositionChangeObserver observer : observers){
+                observer.notifyDeath(this);
+            }
         }
         else {
             if (behaviourVariant == BehaviourVariant.PREDESTINATION) {
@@ -108,15 +119,15 @@ public class Animal extends AbstractMapElement{
             return null;
         }
 
-        this.childrenNum += 1;
-        other.childrenNum += 1;
+        this.increaseChildrenNum();
+        other.increaseChildrenNum();
 
         // initial child energy from parents reproduction
         int childEnergy = this.reproduceEnergy + other.reproduceEnergy;
         this.energyReproduceChange();
         other.energyReproduceChange();
 
-        Animal child = new Animal(position, genomeLength, childEnergy, stuffedEnergy, reproduceEnergy, moveEnergy, mutationVariant, behaviourVariant);
+        Animal child = new Animal(map.getCurrentId(), position, genomeLength, childEnergy, stuffedEnergy, reproduceEnergy, moveEnergy, mutationVariant, behaviourVariant, map);
         Genome newGenome = genomeDivide(other);
         newGenome.mutation();
         child.setGenome(newGenome);
@@ -233,11 +244,37 @@ public class Animal extends AbstractMapElement{
         return childrenNum;
     }
 
+    public void increaseChildrenNum(){
+        ++childrenNum;
+    }
+
     public int getGenomeLength() {
         return genomeLength;
     }
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this){
+            return true;
+        }
+
+        if(obj.getClass() != getClass()){
+            return false;
+        }
+
+        return id == ((Animal) obj).getId();
     }
 }

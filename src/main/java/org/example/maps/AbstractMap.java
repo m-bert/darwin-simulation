@@ -2,31 +2,84 @@ package org.example.maps;
 
 import org.example.elements.AbstractMapElement;
 import org.example.elements.Animal;
+import org.example.elements.Grass;
 import org.example.settings.variants.PlantsGrowthVariant;
+import org.example.utils.AnimalComparator;
 import org.example.utils.IPositionChangeObserver;
 import org.example.utils.Vector2D;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class AbstractMap implements IMap, IPositionChangeObserver {
     protected final int WIDTH;
     protected final int HEIGHT;
-    protected final HashMap<Vector2D, LinkedList<Animal>> animals;
 
     // Plants
-    protected int plantsNum;
+    protected final ConcurrentHashMap<Vector2D, Grass> grass;
     protected final int plantsGrowth;
-    protected final int initialPlants;
+    protected final int initialPlantsNum;
     protected final PlantsGrowthVariant plantsGrowthVariant;
+    protected final int plantsEnergy;
 
     // Animals
+    protected final ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals;
+    protected final ArrayList<Animal> deadAnimals;
     protected int animalsNum;
+    protected int currentId; // Id for animals incremented when new animals is placed on map
 
+    // Equator
+    protected Vector2D equatorOrigin = null;
+    protected int EQUATOR_WIDTH = -1;
+    protected int EQUATOR_HEIGHT = -1;
+
+    public AbstractMap(int WIDTH, int HEIGHT, int plantsGrowth, int initialPlantsNum, int plantsEnergy, PlantsGrowthVariant plantsGrowthVariant) {
+        this.WIDTH = WIDTH;
+        this.HEIGHT = HEIGHT;
+        this.plantsGrowth = plantsGrowth;
+        this.initialPlantsNum = initialPlantsNum;
+        this.plantsEnergy = plantsEnergy;
+        this.plantsGrowthVariant = plantsGrowthVariant;
+
+        grass = new ConcurrentHashMap<>();
+        animals = new ConcurrentHashMap<>();
+        deadAnimals = new ArrayList<>();
+        animalsNum = 0;
+        currentId = 0;
+
+        switch (plantsGrowthVariant) {
+            case TOXIC_CORPSES -> {
+            }
+
+            case GRASSY_EQUATORS -> {
+                int area = WIDTH * HEIGHT;
+                int equatorArea = (int) (0.2 * area);
+                int equatorHeight = equatorArea / WIDTH;
+                int middleHeight = HEIGHT / 2;
+                int equatorOriginY = middleHeight - (equatorHeight / 2);
+
+                equatorOrigin = new Vector2D(0, equatorOriginY);
+                EQUATOR_HEIGHT = equatorHeight;
+                EQUATOR_WIDTH = WIDTH;
+            }
+        }
+    }
 
     @Override
-    public void positionChanged(Vector2D oldPosition, Vector2D newPosition) {
+    public void positionChanged(Animal animal, Vector2D oldPosition, Vector2D newPosition) {
+        animals.get(oldPosition).remove(animal);
 
+        animals.computeIfAbsent(newPosition, k -> new LinkedList<>());
+        animals.get(newPosition).add(animal);
+
+        animals.get(newPosition).sort(new AnimalComparator());
+    }
+
+    @Override
+    public void notifyDeath(Animal animal) {
+        deadAnimals.add(animal);
     }
 
     @Override
@@ -41,31 +94,148 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
 
     @Override
     public boolean place(AbstractMapElement mapElement) {
-        return false;
+        Vector2D position = mapElement.getPosition();
+
+        if (mapElement instanceof Animal) {
+            animals.computeIfAbsent(position, k -> new LinkedList<>());
+            animals.get(position).add((Animal) mapElement);
+        } else {
+            if (containsGrassAt(position)) {
+                return false;
+            }
+
+            grass.put(position, (Grass) mapElement);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean containsGrassAt(Vector2D position) {
+        return grass.get(position) != null;
     }
 
     @Override
     public LinkedList<AbstractMapElement> objectsAt(Vector2D position) {
-        return null;
+        LinkedList<AbstractMapElement> objects = new LinkedList<>(animals.get(position));
+        objects.add(grass.get(position));
+
+        return objects.stream().filter(Objects::nonNull).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
     public void removeDeadAnimals() {
+        for (Animal animal : deadAnimals) {
+            animals.get(animal.getPosition()).remove(animal);
+        }
 
+        deadAnimals.clear();
     }
 
     @Override
     public void eating() {
+        for (Vector2D key : animals.keySet()) {
+            if (!containsGrassAt(key)) {
+                continue;
+            }
 
+            LinkedList<Animal> animalsAt = animals.get(key);
+            animalsAt.get(0).eat(plantsEnergy);
+
+            grass.remove(key);
+        }
     }
 
     @Override
     public void reproduce() {
+        for (Vector2D key : animals.keySet()) {
+            if (animals.get(key).size() < 2) {
+                continue;
+            }
 
+            Animal parent1 = animals.get(key).get(0);
+            Animal parent2 = animals.get(key).get(1);
+
+            Animal child = parent1.reproduce(parent2);
+
+            if (child != null) {
+                place(child);
+            }
+        }
+    }
+
+    private Vector2D findGrassPosition(boolean onEquator) {
+        final int occupiedFields = grass.size();
+        final int maxAmount = WIDTH * HEIGHT;
+
+        if (occupiedFields == maxAmount) {
+            return null;
+        }
+
+        int x, y;
+        int trials = 0;
+
+        do {
+            ++trials;
+
+            x = ThreadLocalRandom.current().nextInt(0, WIDTH + 1);
+
+            if (onEquator) {
+                y = ThreadLocalRandom.current().nextInt(equatorOrigin.y, equatorOrigin.y + EQUATOR_HEIGHT + 1);
+            } else {
+                if (new Random().nextDouble() <= 0.5) {
+                    y = ThreadLocalRandom.current().nextInt(0, equatorOrigin.y);
+                } else {
+                    y = ThreadLocalRandom.current().nextInt(equatorOrigin.y + EQUATOR_HEIGHT + 1, HEIGHT);
+                }
+            }
+
+            if (trials == maxAmount) {
+                return null;
+            }
+
+        } while (containsGrassAt(new Vector2D(x, y)));
+
+        return new Vector2D(x, y);
     }
 
     @Override
     public void plantSeeds() {
+        switch (plantsGrowthVariant) {
+            case TOXIC_CORPSES -> plantCorpses();
+            case GRASSY_EQUATORS -> plantEquator();
+        }
+    }
 
+    @Override
+    public void plantEquator() {
+        for (int i = 0; i < plantsGrowth; ++i) {
+            double probability = new Random().nextDouble();
+            Vector2D position;
+
+            if (probability <= 0.2) {
+                position = findGrassPosition(false);
+            } else {
+                position = findGrassPosition(true);
+            }
+
+            if (position == null) {
+                // Cannot plant more seeds
+                break;
+            }
+
+            grass.put(position, new Grass(position));
+        }
+    }
+
+    @Override
+    public void plantCorpses() {
+        //TODO: Implement later
+    }
+
+    @Override
+    public int getCurrentId() {
+        //TODO: Think about incrementation moment
+        return currentId;
     }
 }

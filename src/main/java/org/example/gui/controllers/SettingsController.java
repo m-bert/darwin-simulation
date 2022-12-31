@@ -225,6 +225,10 @@ public class SettingsController extends VBox {
         if (settings.getGenomeLength() <= 0) {
             throw new InvalidSettingsException("Genome length cannot be non-positive");
         }
+
+        if (settings.getStuffedEnergy() <= settings.getReproduceEnergy()){
+            throw new InvalidSettingsException("Stuffed energy cannot be less than reproduction energy");
+        }
     }
 
     @FXML
