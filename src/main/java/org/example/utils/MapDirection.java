@@ -37,7 +37,7 @@ public enum MapDirection {
         return directVals[(this.ordinal()-1 + directVals.length) % directVals.length];
     }
 
-    public MapDirection randomDirection(){
+    public static MapDirection randomDirection(){
         return directVals[generator.nextInt(directVals.length)];
     }
 

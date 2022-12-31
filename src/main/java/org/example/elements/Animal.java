@@ -1,5 +1,7 @@
 package org.example.elements;
 
+import org.example.settings.variants.BehaviourVariant;
+import org.example.settings.variants.MutationVariant;
 import org.example.utils.IPositionChangeObserver;
 import org.example.utils.MapDirection;
 import org.example.utils.Vector2D;
@@ -10,30 +12,34 @@ import java.util.Random;
 
 public class Animal extends AbstractMapElement{
 
-    public int lifeDays;
-    public int initialEnergy;
-    public int reproduceEnergy;
-    public int stuffedEnergy;
-    public int moveEnergy;
-    public int childrenNum;
-    public int genomeLength;
-    public Genome genome;
-    public boolean isAlive;
-    public MapDirection direction = MapDirection.NORTH;
+    private MutationVariant mutationVariant;
+    private BehaviourVariant behaviourVariant;
+    private Random random = new Random();
+    private int lifeDays;
+    private int initialEnergy;
+    private int reproduceEnergy;
+    private int stuffedEnergy;
+    private int moveEnergy;
+    private int childrenNum;
+    private int genomeLength;
+    private Genome genome;
+    private boolean isAlive;
+    private MapDirection direction;
     private final ArrayList<IPositionChangeObserver> observers;
 
-    public Animal(Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy) {
+    public Animal(Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy, MutationVariant mutationVariant, BehaviourVariant behaviourVariant) {
         // initial position for animal
         super(position);
-        this.direction.randomDirection();
+        this.direction = MapDirection.randomDirection();
         this.observers = new ArrayList<>();
         // when animal is dead - set false
         this.isAlive = true;
         this.lifeDays = 0;
         this.childrenNum = 0;
         this.genomeLength = genomeLength;
+        this.behaviourVariant = behaviourVariant;
         // get genomeLength from settings
-        this.genome = new Genome(genomeLength);
+        this.genome = new Genome(genomeLength, mutationVariant);
         // only first generation of animal have init energy from settings
         // juveniles will have init energy as reproduction energy from parents
         this.initialEnergy = initialEnergy;
@@ -43,7 +49,7 @@ public class Animal extends AbstractMapElement{
         this.reproduceEnergy = reproduceEnergy;
         this.moveEnergy = moveEnergy;
 
-        genome.randomGenome();
+        genome.createRandomGenome();
     }
 
     private void positionChanged(Vector2D oldPosition, Vector2D newPosition) {
@@ -56,6 +62,7 @@ public class Animal extends AbstractMapElement{
         // angleNumber from 0 to 7 (map directions)
         for(int i=0; i < angleNumber; i++){
             direction = direction.next();
+            System.out.println(direction);
         }
     }
 
@@ -67,11 +74,31 @@ public class Animal extends AbstractMapElement{
             isAlive = false;
         }
         else {
-            int currentGenome = genome.next();
-            rotateAnimal(currentGenome); // add from genome next gen
-            Vector2D previousPosition = position;
-            position = position.add(direction.toUnitVector());
-            positionChanged(previousPosition, position);
+            if (behaviourVariant == BehaviourVariant.PREDESTINATION) {
+                int currentGenome = genome.next();
+                rotateAnimal(currentGenome);
+                Vector2D previousPosition = position;
+                position = position.add(direction.toUnitVector());
+                positionChanged(previousPosition, position);
+            }
+            else {
+                double probability = this.random.nextDouble();
+                if (probability <= 0.2) {
+                    int randomNumSize = random.nextInt(genomeLength);
+                    int currentGenome = genome.next();
+                    for (int i = 0; i < randomNumSize; i++) {
+                        currentGenome = genome.next();
+                    }
+                    rotateAnimal(currentGenome);
+                } else {
+                    int currentGenome = genome.next();
+                    rotateAnimal(currentGenome);
+                }
+
+                Vector2D previousPosition = position;
+                position = position.add(direction.toUnitVector());
+                positionChanged(previousPosition, position);
+            }
         }
     }
 
@@ -85,8 +112,10 @@ public class Animal extends AbstractMapElement{
         this.energyReproduceChange();
         other.energyReproduceChange();
 
-        Animal child = new Animal(position, genomeLength, childEnergy, stuffedEnergy, reproduceEnergy, moveEnergy);
-        child.setGenome(genomeDivide(other));
+        Animal child = new Animal(position, genomeLength, childEnergy, stuffedEnergy, reproduceEnergy, moveEnergy, mutationVariant, behaviourVariant);
+        Genome newGenome = genomeDivide(other);
+        newGenome.mutation();
+        child.setGenome(newGenome);
 
         return child;
     }
@@ -96,7 +125,7 @@ public class Animal extends AbstractMapElement{
         int thisGenomePartLen = (int) (this.genomeLength*((float) this.getEnergy()/totalEnergy));
         int otherGenomePartLen = genomeLength - thisGenomePartLen;
 
-        Genome childGenome = new Genome(genomeLength);
+        Genome childGenome = new Genome(genomeLength, mutationVariant);
 
         // 0 - left part of stronger Animal
         // 1 - right part of stronger Animal
@@ -116,13 +145,13 @@ public class Animal extends AbstractMapElement{
             newGenome.addAll(firstPart);
             newGenome.addAll(secondPart);
         } else if (side == 0 && this.getEnergy() <= other.getEnergy()) {
-            List<Integer> firstPart = other.genome.getLeftGenomePart(6);
-            List<Integer> secondPart = this.genome.getRightGenomePart(6);
+            List<Integer> firstPart = other.genome.getLeftGenomePart(thisGenomePartLen);
+            List<Integer> secondPart = this.genome.getRightGenomePart(thisGenomePartLen);
             newGenome.addAll(firstPart);
             newGenome.addAll(secondPart);
         } else {
-            List<Integer> firstPart = this.genome.getLeftGenomePart(2);
-            List<Integer> secondPart = other.genome.getRightGenomePart(2);
+            List<Integer> firstPart = this.genome.getLeftGenomePart(otherGenomePartLen);
+            List<Integer> secondPart = other.genome.getRightGenomePart(otherGenomePartLen);
             newGenome.addAll(firstPart);
             newGenome.addAll(secondPart);
         }
@@ -184,5 +213,27 @@ public class Animal extends AbstractMapElement{
         return initialEnergy;
     }
 
-}
+    public Genome getGenome() {
+        return genome;
+    }
 
+    public int getLifeDays() {
+        return lifeDays;
+    }
+
+    public int getInitialEnergy() {
+        return initialEnergy;
+    }
+
+    public int getChildrenNum() {
+        return childrenNum;
+    }
+
+    public int getGenomeLength() {
+        return genomeLength;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+}
