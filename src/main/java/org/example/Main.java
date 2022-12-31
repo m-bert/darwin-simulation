@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-//        Application.launch(App.class, args);
+        Application.launch(App.class, args);
 
         // pseudo tests genome
 //        Animal animal1 = new Animal(new Vector2D(1, 1), 8, 60, 10, 10, 5, MutationVariant.CORRECTION, BehaviourVariant.PREDESTINATION);
