@@ -106,6 +106,8 @@ public class Animal extends AbstractMapElement{
                     rotateAnimal(currentGenome);
                 }
 
+
+                // TODO: implement canMoveTo and teleports
                 Vector2D previousPosition = position;
                 position = position.add(direction.toUnitVector());
                 positionChanged(previousPosition, position);

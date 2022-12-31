@@ -83,13 +83,13 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
     }
 
     @Override
-    public boolean canMoveTo(Vector2D position) {
-        return false;
+    public boolean isInsideBoundaries(Vector2D position) {
+        return position.x >= 0 && position.x < WIDTH && position.y >= 0 && position.y < HEIGHT;
     }
 
     @Override
-    public void moveCallback(Vector2D position) {
-
+    public Vector2D teleportAnimal(Vector2D position) {
+        return null;
     }
 
     @Override
@@ -178,10 +178,10 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
         do {
             ++trials;
 
-            x = ThreadLocalRandom.current().nextInt(0, WIDTH + 1);
+            x = ThreadLocalRandom.current().nextInt(0, WIDTH);
 
             if (onEquator) {
-                y = ThreadLocalRandom.current().nextInt(equatorOrigin.y, equatorOrigin.y + EQUATOR_HEIGHT + 1);
+                y = ThreadLocalRandom.current().nextInt(equatorOrigin.y, equatorOrigin.y + EQUATOR_HEIGHT);
             } else {
                 if (new Random().nextDouble() <= 0.5) {
                     y = ThreadLocalRandom.current().nextInt(0, equatorOrigin.y);
