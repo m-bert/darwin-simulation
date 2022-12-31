@@ -107,6 +107,10 @@ public class Animal extends AbstractMapElement{
            other.getEnergy() < other.stuffedEnergy){
             return null;
         }
+
+        this.childrenNum += 1;
+        other.childrenNum += 1;
+
         // initial child energy from parents reproduction
         int childEnergy = this.reproduceEnergy + other.reproduceEnergy;
         this.energyReproduceChange();
