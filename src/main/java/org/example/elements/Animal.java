@@ -1,5 +1,6 @@
 package org.example.elements;
 
+import org.example.maps.HellPortal;
 import org.example.maps.IMap;
 import org.example.settings.variants.BehaviourVariant;
 import org.example.settings.variants.MutationVariant;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Animal extends AbstractMapElement{
+public class Animal extends AbstractMapElement {
     private final int id;
     private MutationVariant mutationVariant;
     private BehaviourVariant behaviourVariant;
@@ -65,34 +66,39 @@ public class Animal extends AbstractMapElement{
         }
     }
 
-    public void rotateAnimal(int angleNumber){
+    public void rotateAnimal(int angleNumber) {
         // angleNumber from 0 to 7 (map directions)
-        for(int i=0; i < angleNumber; i++){
+        for (int i = 0; i < angleNumber; i++) {
             direction = direction.next();
             System.out.println(direction);
         }
     }
 
-    public void move(){
-        initialEnergy -= moveEnergy;
-        increaseAge();
-        if(initialEnergy <= 0){
-            // usunac niezywe zwierzeta w klasie map
+    private void checkDeath(){
+        if (initialEnergy <= 0) {
             isAlive = false;
 
-            for(IPositionChangeObserver observer : observers){
+            for (IPositionChangeObserver observer : observers) {
                 observer.notifyDeath(this);
             }
         }
-        else {
-            if (behaviourVariant == BehaviourVariant.PREDESTINATION) {
+    }
+
+    public void move() {
+        initialEnergy -= moveEnergy;
+        increaseAge();
+        checkDeath();
+
+        if(!isAlive){
+            return;
+        }
+
+        switch (behaviourVariant) {
+            case PREDESTINATION -> {
                 int currentGenome = genome.next();
                 rotateAnimal(currentGenome);
-                Vector2D previousPosition = position;
-                position = position.add(direction.toUnitVector());
-                positionChanged(previousPosition, position);
             }
-            else {
+            case CRAZY -> {
                 double probability = this.random.nextDouble();
                 if (probability <= 0.2) {
                     int randomNumSize = random.nextInt(genomeLength);
@@ -105,19 +111,37 @@ public class Animal extends AbstractMapElement{
                     int currentGenome = genome.next();
                     rotateAnimal(currentGenome);
                 }
-
-
-                // TODO: implement canMoveTo and teleports
-                Vector2D previousPosition = position;
-                position = position.add(direction.toUnitVector());
-                positionChanged(previousPosition, position);
             }
+        }
+
+        Vector2D previousPosition = position;
+        Vector2D newPosition = position.add(direction.toUnitVector());
+
+        if (map.isInsideBoundaries(newPosition)) {
+            position = newPosition;
+            positionChanged(previousPosition, position);
+
+            return;
+        }
+
+        Vector2D teleportPosition = map.teleportAnimal(newPosition);
+
+        if (teleportPosition == null) {
+            return;
+        }
+
+        position = teleportPosition;
+        positionChanged(previousPosition, position);
+
+        if (map instanceof HellPortal) {
+            initialEnergy -= reproduceEnergy;
+            checkDeath();
         }
     }
 
-    public Animal reproduce(Animal other){
-        if(this.getEnergy() < this.stuffedEnergy ||
-           other.getEnergy() < other.stuffedEnergy){
+    public Animal reproduce(Animal other) {
+        if (this.getEnergy() < this.stuffedEnergy ||
+                other.getEnergy() < other.stuffedEnergy) {
             return null;
         }
 
@@ -137,9 +161,9 @@ public class Animal extends AbstractMapElement{
         return child;
     }
 
-    public Genome genomeDivide(Animal other){
+    public Genome genomeDivide(Animal other) {
         int totalEnergy = this.getEnergy() + other.getEnergy();
-        int thisGenomePartLen = (int) (this.genomeLength*((float) this.getEnergy()/totalEnergy));
+        int thisGenomePartLen = (int) (this.genomeLength * ((float) this.getEnergy() / totalEnergy));
         int otherGenomePartLen = genomeLength - thisGenomePartLen;
 
         Genome childGenome = new Genome(genomeLength, mutationVariant);
@@ -150,13 +174,12 @@ public class Animal extends AbstractMapElement{
         int side = rand.nextInt() % 2;
         List<Integer> newGenome = new ArrayList<>();
 
-        if(side == 0 && this.getEnergy() > other.getEnergy()){
+        if (side == 0 && this.getEnergy() > other.getEnergy()) {
             List<Integer> firstPart = this.genome.getLeftGenomePart(thisGenomePartLen);
             List<Integer> secondPart = other.genome.getRightGenomePart(thisGenomePartLen);
             newGenome.addAll(firstPart);
             newGenome.addAll(secondPart);
-        }
-        else if(side == 1 && this.getEnergy() > other.getEnergy()){
+        } else if (side == 1 && this.getEnergy() > other.getEnergy()) {
             List<Integer> firstPart = other.genome.getLeftGenomePart(otherGenomePartLen);
             List<Integer> secondPart = this.genome.getRightGenomePart(otherGenomePartLen);
             newGenome.addAll(firstPart);
@@ -181,18 +204,18 @@ public class Animal extends AbstractMapElement{
         this.genome = genome;
     }
 
-    public void energyReproduceChange(){
+    public void energyReproduceChange() {
         initialEnergy -= reproduceEnergy;
-        if(initialEnergy <= 0){
+        if (initialEnergy <= 0) {
             isAlive = false;
         }
     }
 
-    public void eat(int eatEnergy){
+    public void eat(int eatEnergy) {
         initialEnergy += eatEnergy;
     }
 
-    public void increaseAge(){
+    public void increaseAge() {
         lifeDays += 1;
     }
 
@@ -226,7 +249,7 @@ public class Animal extends AbstractMapElement{
         };
     }
 
-    public int getEnergy(){
+    public int getEnergy() {
         return initialEnergy;
     }
 
@@ -246,7 +269,7 @@ public class Animal extends AbstractMapElement{
         return childrenNum;
     }
 
-    public void increaseChildrenNum(){
+    public void increaseChildrenNum() {
         ++childrenNum;
     }
 
@@ -269,11 +292,11 @@ public class Animal extends AbstractMapElement{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this){
+        if (obj == this) {
             return true;
         }
 
-        if(obj.getClass() != getClass()){
+        if (obj.getClass() != getClass()) {
             return false;
         }
 
