@@ -38,13 +38,14 @@ public class SimulationEngine implements Runnable {
 
     void moveAnimals(){
         ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals = map.getAnimals();
+        LinkedList<Animal> allAnimals = new LinkedList<>();
 
         for(Vector2D key : animals.keySet()){
-            LinkedList<Animal> animalsAtKey = animals.get(key);
+            allAnimals.addAll(animals.get(key));
+        }
 
-            for(Animal animal : animalsAtKey){
-                animal.move();
-            }
+        for (Animal animal : allAnimals){
+            animal.move();
         }
     }
 

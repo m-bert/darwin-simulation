@@ -5,7 +5,7 @@ import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.settings.variants.PlantsGrowthVariant;
 import org.example.utils.AnimalComparator;
-import org.example.utils.IPositionChangeObserver;
+import org.example.utils.IAnimalObserver;
 import org.example.utils.Vector2D;
 
 import java.util.*;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-public class AbstractMap implements IMap, IPositionChangeObserver {
+public class AbstractMap implements IMap, IAnimalObserver {
     protected final int WIDTH;
     protected final int HEIGHT;
 
@@ -70,6 +70,10 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
     @Override
     public void positionChanged(Animal animal, Vector2D oldPosition, Vector2D newPosition) {
         animals.get(oldPosition).remove(animal);
+
+        if(animals.get(oldPosition).size() == 0){
+            animals.remove(oldPosition);
+        }
 
         animals.computeIfAbsent(newPosition, k -> new LinkedList<>());
         animals.get(newPosition).add(animal);
@@ -129,7 +133,12 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
     @Override
     public void removeDeadAnimals() {
         for (Animal animal : deadAnimals) {
-            animals.get(animal.getPosition()).remove(animal);
+            Vector2D position = animal.getPosition();
+            animals.get(position).remove(animal);
+
+            if(animals.get(position).size() == 0){
+                animals.remove(position);
+            }
         }
 
         animalsNum -= deadAnimals.size();
@@ -138,8 +147,19 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
 
     @Override
     public void eating() {
-        for (Vector2D key : animals.keySet()) {
-            if (!containsGrassAt(key)) {
+//        for (Vector2D key : animals.keySet()) {
+//            if (!containsGrassAt(key) || animals.get(key).size() == 0) {
+//                continue;
+//            }
+//
+//            LinkedList<Animal> animalsAt = animals.get(key);
+//            animalsAt.get(0).eat(plantsEnergy);
+//
+//            grass.remove(key);
+//        }
+
+        for (Vector2D key : grass.keySet()) {
+            if (animals.get(key) == null) {
                 continue;
             }
 
