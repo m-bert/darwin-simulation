@@ -36,7 +36,9 @@ public class Simulation extends Stage {
 
         simulationController = new SimulationController(new Gson().toJson(simulationSettings));
         simulationScene = new Scene(simulationController);
-        this.setScene(simulationScene);
+
+        setScene(simulationScene);
+        show();
 
         simulationThread = new Thread(simulationEngine);
         simulationThread.start();

@@ -247,7 +247,6 @@ public class SettingsController extends VBox {
             validateSettings(settings);
 
             Simulation simulation = new Simulation(settings);
-            simulation.show();
         } catch (InvalidSettingsException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(e.getMessage());
