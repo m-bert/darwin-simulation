@@ -99,6 +99,8 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
         if (mapElement instanceof Animal) {
             animals.computeIfAbsent(position, k -> new LinkedList<>());
             animals.get(position).add((Animal) mapElement);
+
+            ++currentId;
         } else {
             if (containsGrassAt(position)) {
                 return false;
