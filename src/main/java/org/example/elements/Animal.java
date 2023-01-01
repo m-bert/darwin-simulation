@@ -70,7 +70,6 @@ public class Animal extends AbstractMapElement {
         // angleNumber from 0 to 7 (map directions)
         for (int i = 0; i < angleNumber; i++) {
             direction = direction.next();
-            System.out.println(direction);
         }
     }
 

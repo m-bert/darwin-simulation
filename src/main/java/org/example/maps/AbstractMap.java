@@ -100,6 +100,7 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
             animals.computeIfAbsent(position, k -> new LinkedList<>());
             animals.get(position).add((Animal) mapElement);
 
+            ++animalsNum;
             ++currentId;
         } else {
             if (containsGrassAt(position)) {
@@ -131,6 +132,7 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
             animals.get(animal.getPosition()).remove(animal);
         }
 
+        animalsNum -= deadAnimals.size();
         deadAnimals.clear();
     }
 
@@ -239,5 +241,15 @@ public class AbstractMap implements IMap, IPositionChangeObserver {
     public int getCurrentId() {
         //TODO: Think about incrementation moment
         return currentId;
+    }
+
+    @Override
+    public int getAnimalsNum() {
+        return animalsNum;
+    }
+
+    @Override
+    public ConcurrentHashMap<Vector2D, LinkedList<Animal>> getAnimals() {
+        return animals;
     }
 }
