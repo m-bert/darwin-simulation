@@ -67,6 +67,7 @@ public class Simulation extends Stage {
         show();
 
         simulationEngine = new SimulationEngine(simulationSettings, simulationController, map, dataFilename);
+        simulationController.setEngine(simulationEngine);
 
         simulationThread = new Thread(simulationEngine);
         simulationThread.start();

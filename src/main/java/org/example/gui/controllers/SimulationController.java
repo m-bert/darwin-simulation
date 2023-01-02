@@ -1,6 +1,8 @@
 package org.example.gui.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -14,6 +16,7 @@ import org.example.gui.MapStatisticsBox;
 import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
 import org.example.simulation.ISimulationController;
+import org.example.simulation.ISimulationEngine;
 import org.example.utils.statistics.MapStatistics;
 import org.example.utils.Vector2D;
 
@@ -31,14 +34,19 @@ public class SimulationController extends VBox implements ISimulationController 
     private final GUIElement[][] board;
     private final GridPane grid;
 
+    private ISimulationEngine engine;
+    private boolean isRunning;
+
     public SimulationController(SimulationSettings settings, IMap map) {
         this.settings = settings;
         this.map = map;
-        this.mapStatistics = map.getStatistics();
-
+        mapStatistics = map.getStatistics();
         WIDTH = settings.getMapWidth();
         HEIGHT = settings.getMapHeight();
         CELL_SIZE = 20;
+
+        isRunning = true;
+        engine = null;
 
         // Load FXML
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/simulation.fxml"));
@@ -78,6 +86,11 @@ public class SimulationController extends VBox implements ISimulationController 
         // Add statistics
         mapStatisticsBox = new MapStatisticsBox(mapStatistics);
         getChildren().add(mapStatisticsBox);
+
+        // Add pause button
+        Button button = new Button("Pause simulation");
+        button.setOnAction(this::pauseButtonClicked);
+        getChildren().add(button);
 
         // Add animal statistics
         animalStatisticBox = new AnimalStatisticsBox();
@@ -126,8 +139,27 @@ public class SimulationController extends VBox implements ISimulationController 
         animalStatisticBox.updateStatistics();
     }
 
+    public void pauseButtonClicked(ActionEvent event){
+        if(engine == null){
+            return;
+        }
+
+        if(isRunning){
+            engine.pause();
+        } else {
+            engine.resume();
+        }
+
+        isRunning = !isRunning;
+    }
+
     @Override
     public void setTrackedAnimal(Animal animal) {
         animalStatisticBox.setStatistics(animal.getAnimalStatistics());
+    }
+
+    @Override
+    public void setEngine(ISimulationEngine engine) {
+        this.engine = engine;
     }
 }

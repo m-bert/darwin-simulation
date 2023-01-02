@@ -14,16 +14,18 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SimulationEngine implements Runnable {
+public class SimulationEngine implements Runnable, ISimulationEngine {
     private final SimulationSettings settings;
     private final ISimulationController simulationController;
     private final IMap map;
     private final File dataFile;
+    private boolean isRunning;
 
     public SimulationEngine(SimulationSettings settings, ISimulationController simulationController, IMap map, String dataFilename) {
         this.settings = settings;
         this.map = map;
         this.simulationController = simulationController;
+        isRunning = true;
 
         if (dataFilename != null) {
             dataFile = new File(dataFilename);
@@ -92,6 +94,16 @@ public class SimulationEngine implements Runnable {
 
             map.updateStatistics();
 
+            synchronized (this){
+                if(!isRunning){
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
             if (dataFile != null) {
                 saveDay();
             }
@@ -105,5 +117,14 @@ public class SimulationEngine implements Runnable {
         }
     }
 
+    @Override
+    public void pause() {
+        isRunning = false;
+    }
 
+    @Override
+    public synchronized void resume() {
+        isRunning = true;
+        notify();
+    }
 }
