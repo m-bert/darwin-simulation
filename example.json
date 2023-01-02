@@ -1,0 +1,1 @@
+{"mapVariant":"HELLISH_PORTAL","plantsGrowthVariant":"GRASSY_EQUATORS","mutationVariant":"RANDOM","behaviourVariant":"CRAZY","mapWidth":35,"mapHeight":35,"initialPlants":250,"plantsEnergy":7,"plantsGrowth":25,"initialAnimals":35,"initialEnergy":75,"moveEnergy":3,"stuffedEnergy":10,"reproduceEnergy":5,"minMutations":1,"maxMutations":10,"genomeLength":25,"saveToCSV":true}
