@@ -64,6 +64,7 @@ public class SimulationEngine implements Runnable {
             map.reproduce();
             map.plantSeeds();
 
+            map.updateStatistics();
             try {
                 Platform.runLater(simulationController::updateGrid);
                 Thread.sleep(100);

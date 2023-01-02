@@ -74,4 +74,15 @@ public class Genome {
     public void setGenomes(List<Integer> genomes) {
         this.genomes = genomes;
     }
+
+    public String getGenomeStr(){
+        StringBuilder result = new StringBuilder();
+
+        for(int gen : genomes){
+            result.append(gen);
+        }
+
+        return result.toString();
+    }
+
 }

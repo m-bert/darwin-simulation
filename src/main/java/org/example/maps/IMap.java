@@ -4,8 +4,10 @@ import org.example.elements.AbstractMapElement;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.settings.variants.MapVariant;
+import org.example.utils.MapStatistics;
 import org.example.utils.Vector2D;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,7 +20,9 @@ public interface IMap {
     boolean containsGrassAt(Vector2D position);
     int getAnimalsNum();
     ConcurrentHashMap<Vector2D, LinkedList<Animal>> getAnimals();
+    ArrayList<Animal> getDeadAnimalsHistory();
     ConcurrentHashMap<Vector2D, Grass> getGrass();
+    int getSize();
 
     // Day cycle
     void removeDeadAnimals();
@@ -27,4 +31,7 @@ public interface IMap {
     void plantSeeds();
     void plantEquator();
     void plantCorpses();
+
+    void updateStatistics();
+    MapStatistics getStatistics();
 }

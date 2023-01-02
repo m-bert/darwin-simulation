@@ -6,6 +6,7 @@ import org.example.elements.Grass;
 import org.example.settings.variants.PlantsGrowthVariant;
 import org.example.utils.AnimalComparator;
 import org.example.utils.IAnimalObserver;
+import org.example.utils.MapStatistics;
 import org.example.utils.Vector2D;
 
 import java.util.*;
@@ -17,6 +18,8 @@ public class AbstractMap implements IMap, IAnimalObserver {
     protected final int WIDTH;
     protected final int HEIGHT;
 
+    protected final MapStatistics statistics;
+
     // Plants
     protected final ConcurrentHashMap<Vector2D, Grass> grass;
     protected final int plantsGrowth;
@@ -27,6 +30,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
     // Animals
     protected final ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals;
     protected final ArrayList<Animal> deadAnimals;
+    protected final ArrayList<Animal> deadAnimalsHistory;
     protected int animalsNum;
     protected int currentId; // Id for animals incremented when new animals is placed on map
 
@@ -43,9 +47,11 @@ public class AbstractMap implements IMap, IAnimalObserver {
         this.plantsEnergy = plantsEnergy;
         this.plantsGrowthVariant = plantsGrowthVariant;
 
+        statistics = new MapStatistics(this);
         grass = new ConcurrentHashMap<>();
         animals = new ConcurrentHashMap<>();
         deadAnimals = new ArrayList<>();
+        deadAnimalsHistory = new ArrayList<>();
         animalsNum = 0;
         currentId = 0;
 
@@ -84,6 +90,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
     @Override
     public void notifyDeath(Animal animal) {
         deadAnimals.add(animal);
+        deadAnimalsHistory.add(animal);
     }
 
     @Override
@@ -247,6 +254,16 @@ public class AbstractMap implements IMap, IAnimalObserver {
     }
 
     @Override
+    public void updateStatistics() {
+        statistics.updateStatistics();
+    }
+
+    @Override
+    public MapStatistics getStatistics() {
+        return statistics;
+    }
+
+    @Override
     public int getCurrentId() {
         //TODO: Think about incrementation moment
         return currentId;
@@ -263,7 +280,17 @@ public class AbstractMap implements IMap, IAnimalObserver {
     }
 
     @Override
+    public ArrayList<Animal> getDeadAnimalsHistory() {
+        return deadAnimalsHistory;
+    }
+
+    @Override
     public ConcurrentHashMap<Vector2D, Grass> getGrass() {
         return grass;
+    }
+
+    @Override
+    public int getSize() {
+        return WIDTH * HEIGHT;
     }
 }
