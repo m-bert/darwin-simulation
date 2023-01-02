@@ -84,6 +84,10 @@ public class MapStatistics {
         sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
         for(int i=0; i< TOP_GENOMES_NUM; ++i){
+            if (i == sortedList.size()){
+                break;
+            }
+
             Map.Entry<String, Integer> entry = sortedList.get(i);
             topGenomes.add(entry.getKey());
         }

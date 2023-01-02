@@ -21,7 +21,7 @@ public class SimulationEngine implements Runnable {
         this.simulationController = simulationController;
 
         placeAnimals();
-        simulationController.updateGrid();
+        simulationController.update();
     }
 
     void placeAnimals(){
@@ -66,7 +66,7 @@ public class SimulationEngine implements Runnable {
 
             map.updateStatistics();
             try {
-                Platform.runLater(simulationController::updateGrid);
+                Platform.runLater(simulationController::update);
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
