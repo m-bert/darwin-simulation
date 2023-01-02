@@ -39,6 +39,9 @@ public class AbstractMap implements IMap, IAnimalObserver {
     protected int EQUATOR_WIDTH = -1;
     protected int EQUATOR_HEIGHT = -1;
 
+    // Corpses
+    protected boolean isInitialSeed = true;
+
     public AbstractMap(int WIDTH, int HEIGHT, int plantsGrowth, int initialPlantsNum, int plantsEnergy, PlantsGrowthVariant plantsGrowthVariant) {
         this.WIDTH = WIDTH;
         this.HEIGHT = HEIGHT;
@@ -55,21 +58,16 @@ public class AbstractMap implements IMap, IAnimalObserver {
         animalsNum = 0;
         currentId = 0;
 
-        switch (plantsGrowthVariant) {
-            case TOXIC_CORPSES -> {
-            }
+        if (plantsGrowthVariant == PlantsGrowthVariant.GRASSY_EQUATORS) {
+            int area = WIDTH * HEIGHT;
+            int equatorArea = (int) (0.2 * area);
+            int equatorHeight = equatorArea / WIDTH;
+            int middleHeight = HEIGHT / 2;
+            int equatorOriginY = middleHeight - (equatorHeight / 2);
 
-            case GRASSY_EQUATORS -> {
-                int area = WIDTH * HEIGHT;
-                int equatorArea = (int) (0.2 * area);
-                int equatorHeight = equatorArea / WIDTH;
-                int middleHeight = HEIGHT / 2;
-                int equatorOriginY = middleHeight - (equatorHeight / 2);
-
-                equatorOrigin = new Vector2D(0, equatorOriginY);
-                EQUATOR_HEIGHT = equatorHeight;
-                EQUATOR_WIDTH = WIDTH;
-            }
+            equatorOrigin = new Vector2D(0, equatorOriginY);
+            EQUATOR_HEIGHT = equatorHeight;
+            EQUATOR_WIDTH = WIDTH;
         }
     }
 
@@ -184,7 +182,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
     }
 
-    private Vector2D findGrassPosition(boolean onEquator) {
+    private Vector2D findGrassPosition(boolean onEquator, boolean isToxic) {
         final int occupiedFields = grass.size();
         final int maxAmount = WIDTH * HEIGHT;
 
@@ -193,6 +191,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
 
         int x, y;
+        y = 0;
         int trials = 0;
 
         do {
@@ -200,14 +199,20 @@ public class AbstractMap implements IMap, IAnimalObserver {
 
             x = ThreadLocalRandom.current().nextInt(0, WIDTH);
 
-            if (onEquator) {
+            if (onEquator && !isToxic) {
                 y = ThreadLocalRandom.current().nextInt(equatorOrigin.y, equatorOrigin.y + EQUATOR_HEIGHT);
-            } else {
+            }
+
+            if (!onEquator && !isToxic) {
                 if (new Random().nextDouble() <= 0.5) {
                     y = ThreadLocalRandom.current().nextInt(0, equatorOrigin.y);
                 } else {
                     y = ThreadLocalRandom.current().nextInt(equatorOrigin.y + EQUATOR_HEIGHT + 1, HEIGHT);
                 }
+            }
+
+            if (isToxic) {
+                y = ThreadLocalRandom.current().nextInt(0, HEIGHT);
             }
 
             if (trials == maxAmount) {
@@ -234,9 +239,9 @@ public class AbstractMap implements IMap, IAnimalObserver {
             Vector2D position;
 
             if (probability <= 0.2) {
-                position = findGrassPosition(false);
+                position = findGrassPosition(false, false);
             } else {
-                position = findGrassPosition(true);
+                position = findGrassPosition(true, false);
             }
 
             if (position == null) {
@@ -248,9 +253,45 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
     }
 
-    @Override
     public void plantCorpses() {
-        //TODO: Implement later
+        if (isInitialSeed) {
+            for (int i = 0; i < initialPlantsNum; ++i) {
+                Vector2D position;
+                position = findGrassPosition(false, true);
+
+                if (position == null) {
+                    // Cannot plant more seeds
+                    break;
+                }
+
+                grass.put(position, new Grass(position));
+            }
+        }
+
+        isInitialSeed = false;
+
+        Map<Vector2D, Integer> deathCountMap = new HashMap<>();
+        for (Animal animal : deadAnimalsHistory) {
+            Vector2D position = animal.getPosition();
+            if (deathCountMap.containsKey(position)) {
+                deathCountMap.put(position, deathCountMap.get(position) + 1);
+            } else {
+                deathCountMap.put(position, 1);
+            }
+        }
+
+        List<Map.Entry<Vector2D, Integer>> sortedList = new ArrayList<>(deathCountMap.entrySet());
+        sortedList.sort(Map.Entry.comparingByValue());
+
+        int count = 0;
+        for (Map.Entry<Vector2D, Integer> entry : sortedList) {
+            Vector2D position = entry.getKey();
+            grass.put(position, new Grass(position));
+            count++;
+            if (count == plantsGrowth) {
+                break;
+            }
+        }
     }
 
     @Override
