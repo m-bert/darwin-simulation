@@ -1,9 +1,14 @@
 package org.example.settings;
 
+import javafx.scene.control.Alert;
 import org.example.settings.variants.BehaviourVariant;
 import org.example.settings.variants.MapVariant;
 import org.example.settings.variants.MutationVariant;
 import org.example.settings.variants.PlantsGrowthVariant;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class SimulationSettings {
     private MapVariant mapVariant;
@@ -23,6 +28,7 @@ public class SimulationSettings {
     private int minMutations;
     private int maxMutations;
     private int genomeLength;
+    private boolean saveToCSV;
 
     public MapVariant getMapVariant() {
         return mapVariant;
@@ -158,5 +164,13 @@ public class SimulationSettings {
 
     public void setGenomeLength(int genomeLength) {
         this.genomeLength = genomeLength;
+    }
+
+    public boolean isSaveEnabled() {
+        return saveToCSV;
+    }
+
+    public void setSaveToCSV(boolean saveToCSV) {
+        this.saveToCSV = saveToCSV;
     }
 }
