@@ -1,5 +1,6 @@
 package org.example.simulation;
 
+import javafx.application.Platform;
 import org.example.elements.Animal;
 import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
@@ -11,13 +12,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SimulationEngine implements Runnable {
     private final SimulationSettings settings;
+    private final ISimulationController simulationController;
     private final IMap map;
 
-    public SimulationEngine(SimulationSettings settings, IMap map) {
+    public SimulationEngine(SimulationSettings settings, ISimulationController simulationController, IMap map) {
         this.settings = settings;
         this.map = map;
+        this.simulationController = simulationController;
 
         placeAnimals();
+        simulationController.updateGrid();
     }
 
     void placeAnimals(){
@@ -61,6 +65,7 @@ public class SimulationEngine implements Runnable {
             map.plantSeeds();
 
             try {
+                Platform.runLater(simulationController::updateGrid);
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

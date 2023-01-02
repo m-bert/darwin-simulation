@@ -147,17 +147,6 @@ public class AbstractMap implements IMap, IAnimalObserver {
 
     @Override
     public void eating() {
-//        for (Vector2D key : animals.keySet()) {
-//            if (!containsGrassAt(key) || animals.get(key).size() == 0) {
-//                continue;
-//            }
-//
-//            LinkedList<Animal> animalsAt = animals.get(key);
-//            animalsAt.get(0).eat(plantsEnergy);
-//
-//            grass.remove(key);
-//        }
-
         for (Vector2D key : grass.keySet()) {
             if (animals.get(key) == null) {
                 continue;
@@ -271,5 +260,10 @@ public class AbstractMap implements IMap, IAnimalObserver {
     @Override
     public ConcurrentHashMap<Vector2D, LinkedList<Animal>> getAnimals() {
         return animals;
+    }
+
+    @Override
+    public ConcurrentHashMap<Vector2D, Grass> getGrass() {
+        return grass;
     }
 }
