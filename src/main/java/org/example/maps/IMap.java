@@ -3,8 +3,7 @@ package org.example.maps;
 import org.example.elements.AbstractMapElement;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
-import org.example.settings.variants.MapVariant;
-import org.example.utils.MapStatistics;
+import org.example.utils.statistics.MapStatistics;
 import org.example.utils.Vector2D;
 
 import java.util.ArrayList;

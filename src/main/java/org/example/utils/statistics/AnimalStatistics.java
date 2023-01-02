@@ -1,4 +1,4 @@
-package org.example.utils;
+package org.example.utils.statistics;
 
 import org.example.elements.Animal;
 

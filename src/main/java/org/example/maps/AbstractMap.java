@@ -6,7 +6,7 @@ import org.example.elements.Grass;
 import org.example.settings.variants.PlantsGrowthVariant;
 import org.example.utils.AnimalComparator;
 import org.example.utils.IAnimalObserver;
-import org.example.utils.MapStatistics;
+import org.example.utils.statistics.MapStatistics;
 import org.example.utils.Vector2D;
 
 import java.util.*;

@@ -1,8 +1,6 @@
 package org.example.gui.controllers;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -14,10 +12,9 @@ import org.example.gui.GUIElement;
 import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
 import org.example.simulation.ISimulationController;
-import org.example.utils.MapStatistics;
+import org.example.utils.statistics.MapStatistics;
 import org.example.utils.Vector2D;
 
-import javax.swing.text.Position;
 import java.io.IOException;
 import java.util.LinkedList;
 
