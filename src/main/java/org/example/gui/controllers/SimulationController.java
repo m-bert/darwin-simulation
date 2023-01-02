@@ -14,6 +14,7 @@ import org.example.gui.GUIElement;
 import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
 import org.example.simulation.ISimulationController;
+import org.example.utils.MapStatistics;
 import org.example.utils.Vector2D;
 
 import javax.swing.text.Position;
@@ -23,6 +24,7 @@ import java.util.LinkedList;
 public class SimulationController extends VBox implements ISimulationController {
 
     private final SimulationSettings settings;
+    private final MapStatistics mapStatistics;
     private final IMap map;
     private final int WIDTH, HEIGHT, CELL_SIZE;
     private final GUIElement[][] board;
@@ -31,6 +33,7 @@ public class SimulationController extends VBox implements ISimulationController 
     public SimulationController(SimulationSettings settings, IMap map) {
         this.settings = settings;
         this.map = map;
+        this.mapStatistics = map.getStatistics();
 
         WIDTH = settings.getMapWidth();
         HEIGHT = settings.getMapHeight();
