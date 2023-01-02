@@ -67,7 +67,7 @@ public class SimulationEngine implements Runnable {
             map.updateStatistics();
             try {
                 Platform.runLater(simulationController::update);
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

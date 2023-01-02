@@ -55,21 +55,16 @@ public class AbstractMap implements IMap, IAnimalObserver {
         animalsNum = 0;
         currentId = 0;
 
-        switch (plantsGrowthVariant) {
-            case TOXIC_CORPSES -> {
-            }
+        if (plantsGrowthVariant == PlantsGrowthVariant.GRASSY_EQUATORS) {
+            int area = WIDTH * HEIGHT;
+            int equatorArea = (int) (0.2 * area);
+            int equatorHeight = equatorArea / WIDTH;
+            int middleHeight = HEIGHT / 2;
+            int equatorOriginY = middleHeight - (equatorHeight / 2);
 
-            case GRASSY_EQUATORS -> {
-                int area = WIDTH * HEIGHT;
-                int equatorArea = (int) (0.2 * area);
-                int equatorHeight = equatorArea / WIDTH;
-                int middleHeight = HEIGHT / 2;
-                int equatorOriginY = middleHeight - (equatorHeight / 2);
-
-                equatorOrigin = new Vector2D(0, equatorOriginY);
-                EQUATOR_HEIGHT = equatorHeight;
-                EQUATOR_WIDTH = WIDTH;
-            }
+            equatorOrigin = new Vector2D(0, equatorOriginY);
+            EQUATOR_HEIGHT = equatorHeight;
+            EQUATOR_WIDTH = WIDTH;
         }
     }
 
@@ -184,7 +179,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
     }
 
-    private Vector2D findGrassPosition(boolean onEquator) {
+    private Vector2D findGrassPosition(boolean onEquator, boolean isToxic) {
         final int occupiedFields = grass.size();
         final int maxAmount = WIDTH * HEIGHT;
 
@@ -193,6 +188,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
 
         int x, y;
+        y = 0;
         int trials = 0;
 
         do {
@@ -200,14 +196,20 @@ public class AbstractMap implements IMap, IAnimalObserver {
 
             x = ThreadLocalRandom.current().nextInt(0, WIDTH);
 
-            if (onEquator) {
+            if (onEquator && !isToxic) {
                 y = ThreadLocalRandom.current().nextInt(equatorOrigin.y, equatorOrigin.y + EQUATOR_HEIGHT);
-            } else {
+            }
+
+            if (!onEquator && !isToxic) {
                 if (new Random().nextDouble() <= 0.5) {
                     y = ThreadLocalRandom.current().nextInt(0, equatorOrigin.y);
                 } else {
                     y = ThreadLocalRandom.current().nextInt(equatorOrigin.y + EQUATOR_HEIGHT + 1, HEIGHT);
                 }
+            }
+
+            if (isToxic) {
+                y = ThreadLocalRandom.current().nextInt(0, HEIGHT);
             }
 
             if (trials == maxAmount) {
@@ -234,9 +236,9 @@ public class AbstractMap implements IMap, IAnimalObserver {
             Vector2D position;
 
             if (probability <= 0.2) {
-                position = findGrassPosition(false);
+                position = findGrassPosition(false, false);
             } else {
-                position = findGrassPosition(true);
+                position = findGrassPosition(true, false);
             }
 
             if (position == null) {
@@ -249,7 +251,19 @@ public class AbstractMap implements IMap, IAnimalObserver {
     }
 
     public void plantCorpses() {
-        // Create a Map to count the deaths at each position
+        for (int i = 0; i < plantsGrowth; ++i) {
+            Vector2D position;
+            position = findGrassPosition(false, true);
+
+            if (position == null) {
+                // Cannot plant more seeds
+                break;
+            }
+
+            grass.put(position, new Grass(position));
+        }
+
+
         Map<Vector2D, Integer> deathCountMap = new HashMap<>();
         for (Animal animal : deadAnimalsHistory) {
             Vector2D position = animal.getPosition();
@@ -260,17 +274,15 @@ public class AbstractMap implements IMap, IAnimalObserver {
             }
         }
 
-        // Sort the Map by value in descending order
         List<Map.Entry<Vector2D, Integer>> sortedList = new ArrayList<>(deathCountMap.entrySet());
-        sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        sortedList.sort(Map.Entry.comparingByValue());
 
-        // Plant grass on the top 5 positions
         int count = 0;
         for (Map.Entry<Vector2D, Integer> entry : sortedList) {
             Vector2D position = entry.getKey();
             grass.put(position, new Grass(position));
             count++;
-            if (count == 5) {
+            if (count == plantsGrowth) {
                 break;
             }
         }
