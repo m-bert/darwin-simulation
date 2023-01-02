@@ -83,6 +83,8 @@ public class SettingsController extends VBox {
     @FXML
     private Button startFromFileButton;
 
+    @FXML CheckBox csvCheckBox;
+
     public SettingsController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
         fxmlLoader.setRoot(this);
@@ -158,6 +160,8 @@ public class SettingsController extends VBox {
         } catch (NumberFormatException e) {
             throw new InvalidSettingsException("One of provided values is not integer");
         }
+
+        settings.setSaveToCSV(csvCheckBox.isSelected());
 
         return settings;
     }

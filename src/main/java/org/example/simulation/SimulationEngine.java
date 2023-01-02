@@ -6,6 +6,10 @@ import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
 import org.example.utils.Vector2D;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,24 +18,31 @@ public class SimulationEngine implements Runnable {
     private final SimulationSettings settings;
     private final ISimulationController simulationController;
     private final IMap map;
+    private final File dataFile;
 
-    public SimulationEngine(SimulationSettings settings, ISimulationController simulationController, IMap map) {
+    public SimulationEngine(SimulationSettings settings, ISimulationController simulationController, IMap map, String dataFilename) {
         this.settings = settings;
         this.map = map;
         this.simulationController = simulationController;
+
+        if (dataFilename != null) {
+            dataFile = new File(dataFilename);
+        } else {
+            dataFile = null;
+        }
 
         placeAnimals();
         simulationController.update();
     }
 
-    void placeAnimals(){
-        for(int i=0; i<settings.getInitialAnimals(); ++i){
+    void placeAnimals() {
+        for (int i = 0; i < settings.getInitialAnimals(); ++i) {
             int x = ThreadLocalRandom.current().nextInt(0, settings.getMapWidth());
             int y = ThreadLocalRandom.current().nextInt(0, settings.getMapHeight());
             Vector2D position = new Vector2D(x, y);
 
             Animal animal = new Animal(
-                    map.getCurrentId(), position, settings.getGenomeLength(),settings.getInitialEnergy(), settings.getStuffedEnergy(),
+                    map.getCurrentId(), position, settings.getGenomeLength(), settings.getInitialEnergy(), settings.getStuffedEnergy(),
                     settings.getReproduceEnergy(), settings.getMoveEnergy(), settings.getMutationVariant(), settings.getBehaviourVariant(),
                     map
             );
@@ -40,24 +51,39 @@ public class SimulationEngine implements Runnable {
         }
     }
 
-    void moveAnimals(){
+    void moveAnimals() {
         ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals = map.getAnimals();
         LinkedList<Animal> allAnimals = new LinkedList<>();
 
-        for(Vector2D key : animals.keySet()){
+        for (Vector2D key : animals.keySet()) {
             allAnimals.addAll(animals.get(key));
         }
 
-        for (Animal animal : allAnimals){
+        for (Animal animal : allAnimals) {
             animal.move();
         }
     }
 
+    private void saveDay() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile, true));
+            writer.append("\n")
+                    .append(String.valueOf(map.getStatistics().getAnimalsAmount())).append(";")
+                    .append(String.valueOf(map.getStatistics().getPlantsAmount())).append(";")
+                    .append(String.valueOf(map.getStatistics().getFreeCellsAmount())).append(";")
+                    .append(String.join(",", map.getStatistics().getTopGenomes())).append(";")
+                    .append(String.valueOf(map.getStatistics().getAverageEnergy())).append(";")
+                    .append(String.valueOf(map.getStatistics().getAverageDeadAnimalsLifeLength())).append(";");
 
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void run() {
-        while(map.getAnimalsNum() > 0){
+        while (map.getAnimalsNum() > 0) {
             map.removeDeadAnimals();
             moveAnimals();
             map.eating();
@@ -65,6 +91,11 @@ public class SimulationEngine implements Runnable {
             map.plantSeeds();
 
             map.updateStatistics();
+
+            if (dataFile != null) {
+                saveDay();
+            }
+
             try {
                 Platform.runLater(simulationController::update);
                 Thread.sleep(100);
@@ -73,4 +104,6 @@ public class SimulationEngine implements Runnable {
             }
         }
     }
+
+
 }
