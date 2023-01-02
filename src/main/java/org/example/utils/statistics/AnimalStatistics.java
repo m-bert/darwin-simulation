@@ -12,6 +12,7 @@ public class AnimalStatistics {
     private int grassEatenNum;
     private int childrenNum;
     private int age;
+    private int deathDay;
 
     public AnimalStatistics(Animal animal) {
         this.animal = animal;
@@ -24,6 +25,7 @@ public class AnimalStatistics {
         updateGrassEatenNum();
         updateChildrenNum();
         updateAge();
+        updateDeathDay();
     }
 
     private void updateGenome(){
@@ -50,6 +52,14 @@ public class AnimalStatistics {
         age = animal.getLifeDays();
     }
 
+    private void updateDeathDay(){
+        if(animal.isAlive()){
+            deathDay = -1;
+        } else {
+            deathDay = age;
+        }
+    }
+
 
     public String getGenome() {
         return genome;
@@ -73,5 +83,9 @@ public class AnimalStatistics {
 
     public int getAge() {
         return age;
+    }
+
+    public int getDeathDay(){
+        return deathDay;
     }
 }

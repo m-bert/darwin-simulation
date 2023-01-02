@@ -36,6 +36,7 @@ public class Animal extends AbstractMapElement {
 
     private final IMap map;
     private final AnimalStatistics animalStatistics;
+    private boolean tracked;
 
     public Animal(int id, Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy, MutationVariant mutationVariant, BehaviourVariant behaviourVariant, IMap map) {
         // initial position for animal

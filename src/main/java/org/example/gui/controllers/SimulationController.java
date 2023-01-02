@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.elements.IMapElement;
+import org.example.gui.AnimalStatisticsBox;
 import org.example.gui.GUIElement;
 import org.example.gui.MapStatisticsBox;
 import org.example.maps.IMap;
@@ -23,6 +24,7 @@ public class SimulationController extends VBox implements ISimulationController 
 
     private final SimulationSettings settings;
     private final MapStatisticsBox mapStatisticsBox;
+    private final AnimalStatisticsBox animalStatisticBox;
     private final MapStatistics mapStatistics;
     private final IMap map;
     private final int WIDTH, HEIGHT, CELL_SIZE;
@@ -53,7 +55,7 @@ public class SimulationController extends VBox implements ISimulationController 
         board = new GUIElement[settings.getMapHeight()][settings.getMapWidth()];
         for (int i = 0; i < HEIGHT; ++i) {
             for (int j = 0; j < WIDTH; ++j) {
-                board[i][j] = new GUIElement(null, CELL_SIZE);
+                board[i][j] = new GUIElement(null, this, CELL_SIZE);
             }
         }
 
@@ -76,6 +78,10 @@ public class SimulationController extends VBox implements ISimulationController 
         // Add statistics
         mapStatisticsBox = new MapStatisticsBox(mapStatistics);
         getChildren().add(mapStatisticsBox);
+
+        // Add animal statistics
+        animalStatisticBox = new AnimalStatisticsBox();
+        getChildren().add(animalStatisticBox);
     }
 
     public void drawGrid() {
@@ -105,7 +111,7 @@ public class SimulationController extends VBox implements ISimulationController 
                 }
 
 
-                board[y][x] = new GUIElement(element, CELL_SIZE);
+                board[y][x] = new GUIElement(element, this ,CELL_SIZE);
             }
         }
 
@@ -117,5 +123,11 @@ public class SimulationController extends VBox implements ISimulationController 
         updateGrid();
         mapStatistics.updateStatistics();
         mapStatisticsBox.updateStatistics();
+        animalStatisticBox.updateStatistics();
+    }
+
+    @Override
+    public void setTrackedAnimal(Animal animal) {
+        animalStatisticBox.setStatistics(animal.getAnimalStatistics());
     }
 }
