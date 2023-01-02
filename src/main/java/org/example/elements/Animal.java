@@ -19,6 +19,7 @@ public class Animal extends AbstractMapElement {
     private BehaviourVariant behaviourVariant;
     private Random random = new Random();
     private int lifeDays;
+    private int grassEatenNum;
     private int initialEnergy;
     private final int startEnergy;
     private int reproduceEnergy;
@@ -27,6 +28,7 @@ public class Animal extends AbstractMapElement {
     private int childrenNum;
     private int genomeLength;
     private Genome genome;
+    private String genomeSide;
     private boolean isAlive;
     private MapDirection direction;
     private final IAnimalObserver observer;
@@ -43,6 +45,7 @@ public class Animal extends AbstractMapElement {
         this.isAlive = true;
         this.lifeDays = 0;
         this.childrenNum = 0;
+        this.grassEatenNum = 0;
         this.genomeLength = genomeLength;
         this.behaviourVariant = behaviourVariant;
         // get genomeLength from settings
@@ -211,6 +214,7 @@ public class Animal extends AbstractMapElement {
 
     public void eat(int eatEnergy) {
         initialEnergy += eatEnergy;
+        grassEatenNum++;
     }
 
     public void increaseAge() {
@@ -223,6 +227,10 @@ public class Animal extends AbstractMapElement {
 
     public MapDirection getDirection() {
         return direction;
+    }
+
+    public int getGrassEatenNum() {
+        return grassEatenNum;
     }
 
     @Override
