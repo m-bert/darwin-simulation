@@ -2,6 +2,7 @@ package org.example.maps;
 
 import org.example.elements.AbstractMapElement;
 import org.example.elements.Animal;
+import org.example.elements.Grass;
 import org.example.settings.variants.MapVariant;
 import org.example.utils.Vector2D;
 
@@ -17,6 +18,7 @@ public interface IMap {
     boolean containsGrassAt(Vector2D position);
     int getAnimalsNum();
     ConcurrentHashMap<Vector2D, LinkedList<Animal>> getAnimals();
+    ConcurrentHashMap<Vector2D, Grass> getGrass();
 
     // Day cycle
     void removeDeadAnimals();

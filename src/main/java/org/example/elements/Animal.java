@@ -20,6 +20,7 @@ public class Animal extends AbstractMapElement {
     private Random random = new Random();
     private int lifeDays;
     private int initialEnergy;
+    private final int startEnergy;
     private int reproduceEnergy;
     private int stuffedEnergy;
     private int moveEnergy;
@@ -49,6 +50,7 @@ public class Animal extends AbstractMapElement {
         // only first generation of animal have init energy from settings
         // juveniles will have init energy as reproduction energy from parents
         this.initialEnergy = initialEnergy;
+        this.startEnergy = initialEnergy;
         // ready to reproduce energy
         this.stuffedEnergy = stuffedEnergy;
         // lost energy during reproduction
@@ -249,8 +251,8 @@ public class Animal extends AbstractMapElement {
         return lifeDays;
     }
 
-    public int getInitialEnergy() {
-        return initialEnergy;
+    public int getStartEnergy() {
+        return startEnergy;
     }
 
     public int getChildrenNum() {

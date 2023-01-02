@@ -32,13 +32,13 @@ public class Simulation extends Stage {
                     simulationSettings.getInitialPlants(), simulationSettings.getPlantsEnergy(), simulationSettings.getPlantsGrowthVariant());
         }
 
-        simulationEngine = new SimulationEngine(simulationSettings, map);
-
-        simulationController = new SimulationController(new Gson().toJson(simulationSettings));
+        simulationController = new SimulationController(simulationSettings, map);
         simulationScene = new Scene(simulationController);
 
         setScene(simulationScene);
         show();
+
+        simulationEngine = new SimulationEngine(simulationSettings, simulationController, map);
 
         simulationThread = new Thread(simulationEngine);
         simulationThread.start();
