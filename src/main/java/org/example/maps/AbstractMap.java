@@ -248,9 +248,32 @@ public class AbstractMap implements IMap, IAnimalObserver {
         }
     }
 
-    @Override
     public void plantCorpses() {
-        //TODO: Implement later
+        // Create a Map to count the deaths at each position
+        Map<Vector2D, Integer> deathCountMap = new HashMap<>();
+        for (Animal animal : deadAnimalsHistory) {
+            Vector2D position = animal.getPosition();
+            if (deathCountMap.containsKey(position)) {
+                deathCountMap.put(position, deathCountMap.get(position) + 1);
+            } else {
+                deathCountMap.put(position, 1);
+            }
+        }
+
+        // Sort the Map by value in descending order
+        List<Map.Entry<Vector2D, Integer>> sortedList = new ArrayList<>(deathCountMap.entrySet());
+        sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+        // Plant grass on the top 5 positions
+        int count = 0;
+        for (Map.Entry<Vector2D, Integer> entry : sortedList) {
+            Vector2D position = entry.getKey();
+            grass.put(position, new Grass(position));
+            count++;
+            if (count == 5) {
+                break;
+            }
+        }
     }
 
     @Override
