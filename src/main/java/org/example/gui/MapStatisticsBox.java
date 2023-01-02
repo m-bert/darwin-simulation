@@ -1,5 +1,6 @@
 package org.example.gui;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -28,6 +29,8 @@ public class MapStatisticsBox extends GridPane {
 
         getColumnConstraints().add(new ColumnConstraints());
         getRowConstraints().add(new RowConstraints());
+
+        setPadding(new Insets(10));
 
         updateStatisticsGrid();
     }

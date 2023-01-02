@@ -9,11 +9,12 @@ import javafx.scene.paint.Color;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.elements.IMapElement;
+import org.example.simulation.ISimulationController;
 
 public class GUIElement extends VBox {
     private IMapElement element;
     private final int CELL_SIZE;
-    public GUIElement(IMapElement element, int cellSize) {
+    public GUIElement(IMapElement element, ISimulationController controller, int cellSize) {
         this.element = element;
         CELL_SIZE = cellSize;
 
@@ -29,6 +30,12 @@ public class GUIElement extends VBox {
         } else {
             setBackground(new Background(new BackgroundFill(Color.valueOf("#346602"), CornerRadii.EMPTY, Insets.EMPTY)));
         }
+
+        setOnMouseClicked(e -> {
+            if(element instanceof Animal){
+                controller.setTrackedAnimal((Animal) element);
+            }
+        });
     }
 
     private Color getAnimalColor(double energyRatio){
