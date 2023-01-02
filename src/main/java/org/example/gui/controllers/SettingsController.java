@@ -67,6 +67,8 @@ public class SettingsController extends VBox {
     @FXML
     private TextField initialEnergyInput;
     @FXML
+    private TextField moveEnergyInput;
+    @FXML
     private TextField reproduceEnergyInput;
     @FXML
     private TextField minMutationsInput;
@@ -147,6 +149,7 @@ public class SettingsController extends VBox {
             // Animal properties
             settings.setInitialAnimals(Integer.parseInt(initialAnimalsInput.getText()));
             settings.setInitialEnergy(Integer.parseInt(initialEnergyInput.getText()));
+            settings.setMoveEnergy(Integer.parseInt(moveEnergyInput.getText()));
             settings.setStuffedEnergy(Integer.parseInt(stuffedEnergyInput.getText()));
             settings.setReproduceEnergy(Integer.parseInt(reproduceEnergyInput.getText()));
             settings.setMinMutations(Integer.parseInt(minMutationsInput.getText()));
@@ -204,6 +207,12 @@ public class SettingsController extends VBox {
             throw new InvalidSettingsException("Initial energy cannot be non-positive");
         }
 
+        if (settings.getMoveEnergy() <= 0) {
+            throw new InvalidSettingsException("Move energy cannot be non-positive");
+        } else if(settings.getMoveEnergy() > settings.getInitialEnergy()){
+            throw new InvalidSettingsException("Move energy cannot be greater than initial energy");
+        }
+
         if (settings.getStuffedEnergy() <= 0) {
             throw new InvalidSettingsException("Stuffed energy cannot be non-positive");
         }
@@ -238,7 +247,6 @@ public class SettingsController extends VBox {
             validateSettings(settings);
 
             Simulation simulation = new Simulation(settings);
-            simulation.show();
         } catch (InvalidSettingsException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(e.getMessage());

@@ -4,7 +4,7 @@ import org.example.maps.HellPortal;
 import org.example.maps.IMap;
 import org.example.settings.variants.BehaviourVariant;
 import org.example.settings.variants.MutationVariant;
-import org.example.utils.IPositionChangeObserver;
+import org.example.utils.IAnimalObserver;
 import org.example.utils.MapDirection;
 import org.example.utils.Vector2D;
 
@@ -28,7 +28,7 @@ public class Animal extends AbstractMapElement {
     private Genome genome;
     private boolean isAlive;
     private MapDirection direction;
-    private final ArrayList<IPositionChangeObserver> observers; //TODO: can be one observer?
+    private final IAnimalObserver observer;
 
     private final IMap map;
 
@@ -37,7 +37,7 @@ public class Animal extends AbstractMapElement {
         super(position);
         this.id = id;
         this.direction = MapDirection.randomDirection();
-        this.observers = new ArrayList<>();
+        this.observer = (IAnimalObserver) map;
         // when animal is dead - set false
         this.isAlive = true;
         this.lifeDays = 0;
@@ -54,6 +54,7 @@ public class Animal extends AbstractMapElement {
         // lost energy during reproduction
         this.reproduceEnergy = reproduceEnergy;
         this.moveEnergy = moveEnergy;
+        this.mutationVariant = mutationVariant;
 
         this.map = map;
 
@@ -61,26 +62,21 @@ public class Animal extends AbstractMapElement {
     }
 
     private void positionChanged(Vector2D oldPosition, Vector2D newPosition) {
-        for (IPositionChangeObserver observer : observers) {
-            observer.positionChanged(this, oldPosition, newPosition);
-        }
+        observer.positionChanged(this, oldPosition, newPosition);
     }
 
     public void rotateAnimal(int angleNumber) {
         // angleNumber from 0 to 7 (map directions)
         for (int i = 0; i < angleNumber; i++) {
             direction = direction.next();
-            System.out.println(direction);
         }
     }
 
-    private void checkDeath(){
+    private void checkDeath() {
         if (initialEnergy <= 0) {
             isAlive = false;
 
-            for (IPositionChangeObserver observer : observers) {
-                observer.notifyDeath(this);
-            }
+            observer.notifyDeath(this);
         }
     }
 
@@ -89,7 +85,7 @@ public class Animal extends AbstractMapElement {
         increaseAge();
         checkDeath();
 
-        if(!isAlive){
+        if (!isAlive) {
             return;
         }
 
@@ -225,14 +221,6 @@ public class Animal extends AbstractMapElement {
 
     public MapDirection getDirection() {
         return direction;
-    }
-
-    public void addObserver(IPositionChangeObserver newObserver) {
-        this.observers.add(newObserver);
-    }
-
-    public void removeObserver(IPositionChangeObserver observerToRemove) {
-        this.observers.remove(observerToRemove);
     }
 
     @Override

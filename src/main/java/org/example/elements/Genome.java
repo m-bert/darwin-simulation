@@ -21,9 +21,10 @@ public class Genome {
     }
 
     public void createRandomGenome(){
+        currentIndex = 0;
+
         for(int i = 0; i < genomeLength; i++){
             genomes.add(generator.nextInt(8));
-            currentIndex = 0;
         }
     }
 

@@ -98,6 +98,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label text="Map width:" GridPane.rowIndex="1" />
@@ -121,21 +122,23 @@
                </font></Label>
             <Label text="Initial animals amount:" GridPane.rowIndex="8" />
             <Label text="Initial animals energy:" GridPane.rowIndex="9" />
-            <Label text="Energy required to reproduce:" GridPane.rowIndex="10" />
-            <Label text="Parents energy used to reproduce:" GridPane.rowIndex="11" />
-            <Label text="Minimum mutation amount:" GridPane.rowIndex="12" />
-            <Label text="Maximum mutation amount:" GridPane.rowIndex="13" />
-            <Label text="Genome length:" GridPane.rowIndex="14" />
+            <Label text="Energy required to reproduce:" GridPane.rowIndex="11" />
+            <Label text="Parents energy used to reproduce:" GridPane.rowIndex="12" />
+            <Label text="Minimum mutation amount:" GridPane.rowIndex="13" />
+            <Label text="Maximum mutation amount:" GridPane.rowIndex="14" />
+            <Label text="Genome length:" GridPane.rowIndex="15" />
             <TextField fx:id="initialPlantsInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="plantsEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <TextField fx:id="plantsGrowthInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <TextField fx:id="initialAnimalsInput" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <TextField fx:id="stuffedEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <TextField fx:id="stuffedEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="11" />
             <TextField fx:id="initialEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <TextField fx:id="reproduceEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <TextField fx:id="minMutationsInput" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <TextField fx:id="maxMutationsInput" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-            <TextField fx:id="genomeLengthInput" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <TextField fx:id="reproduceEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <TextField fx:id="minMutationsInput" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <TextField fx:id="maxMutationsInput" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <TextField fx:id="genomeLengthInput" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+            <Label text="Move energy cost:" GridPane.rowIndex="10" />
+            <TextField fx:id="moveEnergyInput" GridPane.columnIndex="1" GridPane.rowIndex="10" />
          </children>
          <VBox.margin>
             <Insets left="20.0" right="20.0" />

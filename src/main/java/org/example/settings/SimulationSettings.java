@@ -17,6 +17,7 @@ public class SimulationSettings {
     private int plantsGrowth;
     private int initialAnimals;
     private int initialEnergy;
+    private int moveEnergy;
     private int stuffedEnergy;
     private int reproduceEnergy;
     private int minMutations;
@@ -109,6 +110,14 @@ public class SimulationSettings {
 
     public void setInitialEnergy(int initialEnergy) {
         this.initialEnergy = initialEnergy;
+    }
+
+    public int getMoveEnergy() {
+        return moveEnergy;
+    }
+
+    public void setMoveEnergy(int moveEnergy) {
+        this.moveEnergy = moveEnergy;
     }
 
     public int getStuffedEnergy() {
