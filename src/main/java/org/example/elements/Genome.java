@@ -28,6 +28,10 @@ public class Genome {
         }
     }
 
+    public int currentGenome(){
+        return genomes.get(currentIndex%genomes.size());
+    }
+
     public int next(){
         int currentGenome = genomes.get(currentIndex%genomes.size());
         currentIndex++;
