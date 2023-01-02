@@ -115,4 +115,27 @@ public class MapStatistics {
         averageDeadAnimalsLifeLength = (double) totalLifeLength / deadAnimals.size();
     }
 
+    public int getAnimalsAmount() {
+        return animalsAmount;
+    }
+
+    public int getPlantsAmount() {
+        return plantsAmount;
+    }
+
+    public int getFreeCellsAmount() {
+        return freeCellsAmount;
+    }
+
+    public ArrayList<String> getTopGenomes() {
+        return topGenomes;
+    }
+
+    public double getAverageEnergy() {
+        return averageEnergy;
+    }
+
+    public double getAverageDeadAnimalsLifeLength() {
+        return averageDeadAnimalsLifeLength;
+    }
 }
