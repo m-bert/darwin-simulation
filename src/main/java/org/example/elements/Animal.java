@@ -7,6 +7,7 @@ import org.example.settings.variants.MutationVariant;
 import org.example.utils.IAnimalObserver;
 import org.example.utils.MapDirection;
 import org.example.utils.Vector2D;
+import org.example.utils.statistics.AnimalStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Animal extends AbstractMapElement {
     private final IAnimalObserver observer;
 
     private final IMap map;
+    private final AnimalStatistics animalStatistics;
 
     public Animal(int id, Vector2D position, int genomeLength, int initialEnergy, int stuffedEnergy, int reproduceEnergy, int moveEnergy, MutationVariant mutationVariant, BehaviourVariant behaviourVariant, IMap map) {
         // initial position for animal
@@ -62,6 +64,7 @@ public class Animal extends AbstractMapElement {
         this.mutationVariant = mutationVariant;
 
         this.map = map;
+        this.animalStatistics = new AnimalStatistics(this);
 
         genome.createRandomGenome();
     }
@@ -89,6 +92,8 @@ public class Animal extends AbstractMapElement {
         initialEnergy -= moveEnergy;
         increaseAge();
         checkDeath();
+
+        animalStatistics.updateStatistics();
 
         if (!isAlive) {
             return;
@@ -158,6 +163,8 @@ public class Animal extends AbstractMapElement {
         Genome newGenome = genomeDivide(other);
         newGenome.mutation();
         child.setGenome(newGenome);
+
+        animalStatistics.updateStatistics();
 
         return child;
     }
@@ -281,6 +288,10 @@ public class Animal extends AbstractMapElement {
 
     public int getId() {
         return id;
+    }
+
+    public AnimalStatistics getAnimalStatistics(){
+        return animalStatistics;
     }
 
     @Override

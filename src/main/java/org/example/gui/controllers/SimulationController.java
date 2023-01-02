@@ -1,8 +1,6 @@
 package org.example.gui.controllers;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -11,19 +9,20 @@ import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.elements.IMapElement;
 import org.example.gui.GUIElement;
+import org.example.gui.MapStatisticsBox;
 import org.example.maps.IMap;
 import org.example.settings.SimulationSettings;
 import org.example.simulation.ISimulationController;
-import org.example.utils.MapStatistics;
+import org.example.utils.statistics.MapStatistics;
 import org.example.utils.Vector2D;
 
-import javax.swing.text.Position;
 import java.io.IOException;
 import java.util.LinkedList;
 
 public class SimulationController extends VBox implements ISimulationController {
 
     private final SimulationSettings settings;
+    private final MapStatisticsBox mapStatisticsBox;
     private final MapStatistics mapStatistics;
     private final IMap map;
     private final int WIDTH, HEIGHT, CELL_SIZE;
@@ -73,6 +72,10 @@ public class SimulationController extends VBox implements ISimulationController 
         drawGrid();
 
         getChildren().add(grid);
+
+        // Add statistics
+        mapStatisticsBox = new MapStatisticsBox(mapStatistics);
+        getChildren().add(mapStatisticsBox);
     }
 
     public void drawGrid() {
@@ -85,7 +88,6 @@ public class SimulationController extends VBox implements ISimulationController 
         }
     }
 
-    @Override
     public void updateGrid() {
         for (int y = 0; y < HEIGHT; ++y) {
             for (int x = 0; x < WIDTH; ++x) {
@@ -108,5 +110,12 @@ public class SimulationController extends VBox implements ISimulationController 
         }
 
         drawGrid();
+    }
+
+    @Override
+    public void update() {
+        updateGrid();
+        mapStatistics.updateStatistics();
+        mapStatisticsBox.updateStatistics();
     }
 }

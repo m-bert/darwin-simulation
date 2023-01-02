@@ -1,9 +1,10 @@
-package org.example.utils;
+package org.example.utils.statistics;
 
 import org.example.elements.Animal;
 import org.example.elements.Genome;
 import org.example.elements.Grass;
 import org.example.maps.IMap;
+import org.example.utils.Vector2D;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,6 +84,10 @@ public class MapStatistics {
         sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
         for(int i=0; i< TOP_GENOMES_NUM; ++i){
+            if (i == sortedList.size()){
+                break;
+            }
+
             Map.Entry<String, Integer> entry = sortedList.get(i);
             topGenomes.add(entry.getKey());
         }
