@@ -6,7 +6,7 @@ import java.util.List;
 
 public class AnimalStatistics {
     private final Animal animal;
-    private List<Integer> genome;
+    private String genome;
     private int activeGenome;
     private int currentEnergy;
     private int grassEatenNum;
@@ -27,7 +27,7 @@ public class AnimalStatistics {
     }
 
     private void updateGenome(){
-        genome = animal.getGenome().getGenomes();
+        genome = animal.getGenome().getGenomeStr();
     }
 
     private void updateActiveGenome(){
@@ -51,7 +51,7 @@ public class AnimalStatistics {
     }
 
 
-    public List<Integer> getGenome() {
+    public String getGenome() {
         return genome;
     }
 
