@@ -39,8 +39,8 @@ public class MapStatisticsBox extends GridPane {
         statisticFields.put("Animals", String.valueOf(statistics.getAnimalsAmount()));
         statisticFields.put("Plants", String.valueOf(statistics.getPlantsAmount()));
         statisticFields.put("Free_places", String.valueOf(statistics.getFreeCellsAmount()));
-        statisticFields.put("Average_energy", String.valueOf(statistics.getAverageEnergy()));
-        statisticFields.put("Average_lifetime", String.valueOf(statistics.getAverageDeadAnimalsLifeLength()));
+        statisticFields.put("Average_energy", String.format("%.2f", statistics.getAverageEnergy()));
+        statisticFields.put("Average_lifetime", String.format("%.2f", statistics.getAverageDeadAnimalsLifeLength()));
 
         ArrayList<String> topGenomes = statistics.getTopGenomes();
         StringBuilder topGenomesSTr = new StringBuilder();

@@ -31,7 +31,7 @@ public class SimulationController extends VBox implements ISimulationController 
     private final IMap map;
     private final int WIDTH, HEIGHT;
     private final int CELL_SIZE = 15;
-    private final int CONTROLS_SIZE = 160;
+    private final int CONTROLS_SIZE = 170;
     private final GUIElement[][] board;
     private final GridPane grid;
 
@@ -105,6 +105,7 @@ public class SimulationController extends VBox implements ISimulationController 
         getChildren().addAll(statisticsHBox, pauseButton);
 
         setMinHeight(HEIGHT * CELL_SIZE + CONTROLS_SIZE);
+        setMinWidth(WIDTH * CELL_SIZE + CONTROLS_SIZE);
     }
 
     public void drawGrid() {
