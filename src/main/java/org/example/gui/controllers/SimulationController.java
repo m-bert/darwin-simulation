@@ -3,10 +3,7 @@ package org.example.gui.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.elements.IMapElement;
@@ -83,18 +80,21 @@ public class SimulationController extends VBox implements ISimulationController 
 
         getChildren().add(grid);
 
+        HBox statisticsHBox = new HBox();
+
         // Add statistics
         mapStatisticsBox = new MapStatisticsBox(mapStatistics);
-        getChildren().add(mapStatisticsBox);
+        statisticsHBox.getChildren().add(mapStatisticsBox);
 
         // Add pause button
         Button button = new Button("Pause simulation");
         button.setOnAction(this::pauseButtonClicked);
-        getChildren().add(button);
 
         // Add animal statistics
         animalStatisticBox = new AnimalStatisticsBox();
-        getChildren().add(animalStatisticBox);
+        statisticsHBox.getChildren().add(animalStatisticBox);
+
+        getChildren().addAll(statisticsHBox, button);
     }
 
     public void drawGrid() {
