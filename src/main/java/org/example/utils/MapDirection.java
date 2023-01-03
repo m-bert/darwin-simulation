@@ -30,14 +30,14 @@ public enum MapDirection {
     }
 
     public MapDirection next() {
-        return directVals[(this.ordinal()+1) % directVals.length];
+        return directVals[(this.ordinal() + 1) % directVals.length];
     }
 
     public MapDirection previous() {
-        return directVals[(this.ordinal()-1 + directVals.length) % directVals.length];
+        return directVals[(this.ordinal() - 1 + directVals.length) % directVals.length];
     }
 
-    public static MapDirection randomDirection(){
+    public static MapDirection randomDirection() {
         return directVals[generator.nextInt(directVals.length)];
     }
 

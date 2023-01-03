@@ -291,7 +291,7 @@ public class Animal extends AbstractMapElement {
         return id;
     }
 
-    public AnimalStatistics getAnimalStatistics(){
+    public AnimalStatistics getAnimalStatistics() {
         return animalStatistics;
     }
 

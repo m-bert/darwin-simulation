@@ -35,7 +35,7 @@ public class MapStatisticsBox extends GridPane {
         updateStatisticsGrid();
     }
 
-    public void updateStatistics(){
+    public void updateStatistics() {
         statisticFields.put("Animals", String.valueOf(statistics.getAnimalsAmount()));
         statisticFields.put("Plants", String.valueOf(statistics.getPlantsAmount()));
         statisticFields.put("Free_places", String.valueOf(statistics.getFreeCellsAmount()));
@@ -45,7 +45,7 @@ public class MapStatisticsBox extends GridPane {
         ArrayList<String> topGenomes = statistics.getTopGenomes();
         StringBuilder topGenomesSTr = new StringBuilder();
 
-        for(String topGenome : topGenomes){
+        for (String topGenome : topGenomes) {
             topGenomesSTr.append(topGenome).append(" ");
         }
 
@@ -58,7 +58,7 @@ public class MapStatisticsBox extends GridPane {
         getChildren().clear();
 
         int i = 0;
-        for(Map.Entry<String, String> statistic : statisticFields.entrySet()){
+        for (Map.Entry<String, String> statistic : statisticFields.entrySet()) {
             add(new Label(statistic.getKey()), 0, i);
             add(new Label(statistic.getValue()), 1, i);
 

@@ -7,6 +7,7 @@ import org.example.gui.controllers.SettingsController;
 
 public class App extends Application {
     private Stage window;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;

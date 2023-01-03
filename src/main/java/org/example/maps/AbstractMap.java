@@ -75,7 +75,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
     public void positionChanged(Animal animal, Vector2D oldPosition, Vector2D newPosition) {
         animals.get(oldPosition).remove(animal);
 
-        if(animals.get(oldPosition).size() == 0){
+        if (animals.get(oldPosition).size() == 0) {
             animals.remove(oldPosition);
         }
 
@@ -141,7 +141,7 @@ public class AbstractMap implements IMap, IAnimalObserver {
             Vector2D position = animal.getPosition();
             animals.get(position).remove(animal);
 
-            if(animals.get(position).size() == 0){
+            if (animals.get(position).size() == 0) {
                 animals.remove(position);
             }
         }

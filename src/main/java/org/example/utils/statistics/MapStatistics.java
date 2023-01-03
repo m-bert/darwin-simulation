@@ -25,7 +25,7 @@ public class MapStatistics {
         TOP_GENOMES_NUM = 5;
     }
 
-    public void updateStatistics(){
+    public void updateStatistics() {
         updateAnimalsAmount();
         updatePlantsAmount();
         updateFreeCellsAmount();
@@ -34,20 +34,20 @@ public class MapStatistics {
         updateAverageDeadAnimalsLifeLength();
     }
 
-    private void updateAnimalsAmount(){
+    private void updateAnimalsAmount() {
         animalsAmount = map.getAnimalsNum();
     }
 
-    private void updatePlantsAmount(){
+    private void updatePlantsAmount() {
         plantsAmount = map.getGrass().size();
     }
 
-    private void updateFreeCellsAmount(){
+    private void updateFreeCellsAmount() {
         ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals = map.getAnimals();
         int animalFieldsWithoutGrass = 0;
 
-        for(Vector2D key : animals.keySet()){
-            if(!map.containsGrassAt(key)){
+        for (Vector2D key : animals.keySet()) {
+            if (!map.containsGrassAt(key)) {
                 ++animalFieldsWithoutGrass;
             }
         }
@@ -55,16 +55,16 @@ public class MapStatistics {
         freeCellsAmount = map.getSize() - map.getGrass().size() - animalFieldsWithoutGrass;
     }
 
-    private void updateTopGenomes(){
+    private void updateTopGenomes() {
         topGenomes.clear();
 
         ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals = map.getAnimals();
         ArrayList<String> genomes = new ArrayList<>();
 
-        for(Vector2D key : animals.keySet()){
+        for (Vector2D key : animals.keySet()) {
             LinkedList<Animal> animalsAt = animals.get(key);
 
-            for (Animal animal : animalsAt){
+            for (Animal animal : animalsAt) {
                 genomes.add(animal.getGenome().getGenomeStr());
             }
         }
@@ -81,8 +81,8 @@ public class MapStatistics {
         List<Map.Entry<String, Integer>> sortedList = new ArrayList<>(countMap.entrySet());
         sortedList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
-        for(int i=0; i< TOP_GENOMES_NUM; ++i){
-            if (i == sortedList.size()){
+        for (int i = 0; i < TOP_GENOMES_NUM; ++i) {
+            if (i == sortedList.size()) {
                 break;
             }
 
@@ -91,14 +91,14 @@ public class MapStatistics {
         }
     }
 
-    private void updateAverageEnergy(){
+    private void updateAverageEnergy() {
         ConcurrentHashMap<Vector2D, LinkedList<Animal>> animals = map.getAnimals();
         int totalEnergy = 0;
 
-        for(Vector2D key : animals.keySet()){
+        for (Vector2D key : animals.keySet()) {
             LinkedList<Animal> animalsAt = animals.get(key);
 
-            for(Animal animal : animalsAt){
+            for (Animal animal : animalsAt) {
                 totalEnergy += animal.getEnergy();
             }
         }
@@ -106,12 +106,12 @@ public class MapStatistics {
         averageEnergy = (double) totalEnergy / map.getAnimalsNum();
     }
 
-    private void updateAverageDeadAnimalsLifeLength(){
-        ArrayList<Animal> deadAnimals =  map.getDeadAnimalsHistory();
+    private void updateAverageDeadAnimalsLifeLength() {
+        ArrayList<Animal> deadAnimals = map.getDeadAnimalsHistory();
 
         int totalLifeLength = 0;
 
-        for(Animal animal : deadAnimals){
+        for (Animal animal : deadAnimals) {
             totalLifeLength += animal.getLifeDays();
         }
 

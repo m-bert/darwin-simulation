@@ -32,8 +32,8 @@ public class AnimalStatisticsBox extends GridPane {
         setPadding(new Insets(10));
     }
 
-    public void updateStatistics(){
-        if(statistics == null){
+    public void updateStatistics() {
+        if (statistics == null) {
             return;
         }
 
@@ -47,11 +47,12 @@ public class AnimalStatisticsBox extends GridPane {
 
         updateStatisticsGrid();
     }
+
     private void updateStatisticsGrid() {
         getChildren().clear();
 
         int i = 0;
-        for(Map.Entry<String, String> statistic : statisticFields.entrySet()){
+        for (Map.Entry<String, String> statistic : statisticFields.entrySet()) {
             add(new Label(statistic.getKey()), 0, i);
             add(new Label(statistic.getValue()), 1, i);
 

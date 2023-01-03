@@ -124,7 +124,7 @@ public class SimulationController extends VBox implements ISimulationController 
                 }
 
 
-                board[y][x] = new GUIElement(element, this ,CELL_SIZE);
+                board[y][x] = new GUIElement(element, this, CELL_SIZE);
             }
         }
 
@@ -139,12 +139,12 @@ public class SimulationController extends VBox implements ISimulationController 
         animalStatisticBox.updateStatistics();
     }
 
-    public void pauseButtonClicked(ActionEvent event){
-        if(engine == null){
+    public void pauseButtonClicked(ActionEvent event) {
+        if (engine == null) {
             return;
         }
 
-        if(isRunning){
+        if (isRunning) {
             engine.pause();
         } else {
             engine.resume();

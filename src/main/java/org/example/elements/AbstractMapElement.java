@@ -2,7 +2,7 @@ package org.example.elements;
 
 import org.example.utils.Vector2D;
 
-public class AbstractMapElement implements IMapElement{
+public class AbstractMapElement implements IMapElement {
 
     protected Vector2D position;
 
