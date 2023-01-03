@@ -27,7 +27,8 @@ public class SimulationController extends VBox implements ISimulationController 
     private final AnimalStatisticsBox animalStatisticBox;
     private final MapStatistics mapStatistics;
     private final IMap map;
-    private final int WIDTH, HEIGHT, CELL_SIZE;
+    private final int WIDTH, HEIGHT;
+    private final int CELL_SIZE = 15;
     private final GUIElement[][] board;
     private final GridPane grid;
 
@@ -41,7 +42,6 @@ public class SimulationController extends VBox implements ISimulationController 
         mapStatistics = map.getStatistics();
         WIDTH = settings.getMapWidth();
         HEIGHT = settings.getMapHeight();
-        CELL_SIZE = 20;
 
         isRunning = true;
         engine = null;
