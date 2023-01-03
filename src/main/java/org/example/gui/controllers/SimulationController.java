@@ -2,6 +2,8 @@ package org.example.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import org.example.elements.Animal;
@@ -29,6 +31,7 @@ public class SimulationController extends VBox implements ISimulationController 
     private final IMap map;
     private final int WIDTH, HEIGHT;
     private final int CELL_SIZE = 15;
+    private final int CONTROLS_SIZE = 160;
     private final GUIElement[][] board;
     private final GridPane grid;
 
@@ -57,6 +60,8 @@ public class SimulationController extends VBox implements ISimulationController 
             throw new RuntimeException(exception);
         }
 
+        setAlignment(Pos.CENTER);
+
         // Set up board array
         board = new GUIElement[settings.getMapHeight()][settings.getMapWidth()];
         for (int i = 0; i < HEIGHT; ++i) {
@@ -68,6 +73,7 @@ public class SimulationController extends VBox implements ISimulationController 
         // Initialize grid
         grid = new GridPane();
         grid.setGridLinesVisible(true);
+        grid.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < WIDTH; ++i) {
             grid.getColumnConstraints().add(new ColumnConstraints(CELL_SIZE));
@@ -82,6 +88,7 @@ public class SimulationController extends VBox implements ISimulationController 
         getChildren().add(grid);
 
         HBox statisticsHBox = new HBox();
+        statisticsHBox.setAlignment(Pos.CENTER);
 
         // Add statistics
         mapStatisticsBox = new MapStatisticsBox(mapStatistics);
@@ -96,6 +103,8 @@ public class SimulationController extends VBox implements ISimulationController 
         statisticsHBox.getChildren().add(animalStatisticBox);
 
         getChildren().addAll(statisticsHBox, pauseButton);
+
+        setMinHeight(HEIGHT * CELL_SIZE + CONTROLS_SIZE);
     }
 
     public void drawGrid() {
