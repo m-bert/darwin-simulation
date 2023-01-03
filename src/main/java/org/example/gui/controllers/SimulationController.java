@@ -33,6 +33,7 @@ public class SimulationController extends VBox implements ISimulationController 
 
     private ISimulationEngine engine;
     private boolean isRunning;
+    private final Button pauseButton;
 
     public SimulationController(SimulationSettings settings, IMap map) {
         this.settings = settings;
@@ -87,14 +88,14 @@ public class SimulationController extends VBox implements ISimulationController 
         statisticsHBox.getChildren().add(mapStatisticsBox);
 
         // Add pause button
-        Button button = new Button("Pause simulation");
-        button.setOnAction(this::pauseButtonClicked);
+        pauseButton = new Button("Pause simulation");
+        pauseButton.setOnAction(this::pauseButtonClicked);
 
         // Add animal statistics
         animalStatisticBox = new AnimalStatisticsBox();
         statisticsHBox.getChildren().add(animalStatisticBox);
 
-        getChildren().addAll(statisticsHBox, button);
+        getChildren().addAll(statisticsHBox, pauseButton);
     }
 
     public void drawGrid() {
@@ -146,8 +147,10 @@ public class SimulationController extends VBox implements ISimulationController 
 
         if (isRunning) {
             engine.pause();
+            pauseButton.setText("Resume simulation");
         } else {
             engine.resume();
+            pauseButton.setText("Pause simulation");
         }
 
         isRunning = !isRunning;
