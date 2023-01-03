@@ -2,13 +2,10 @@ package org.example.gui.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +16,6 @@ import java.nio.file.Paths;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.example.settings.InvalidSettingsException;
 import org.example.settings.SimulationSettings;

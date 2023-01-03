@@ -2,8 +2,6 @@ package org.example.utils.statistics;
 
 import org.example.elements.Animal;
 
-import java.util.List;
-
 public class AnimalStatistics {
     private final Animal animal;
     private String genome;

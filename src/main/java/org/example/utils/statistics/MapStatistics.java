@@ -1,8 +1,6 @@
 package org.example.utils.statistics;
 
 import org.example.elements.Animal;
-import org.example.elements.Genome;
-import org.example.elements.Grass;
 import org.example.maps.IMap;
 import org.example.utils.Vector2D;
 
