@@ -2,8 +2,6 @@ package org.example.utils.statistics;
 
 import org.example.elements.Animal;
 
-import java.util.List;
-
 public class AnimalStatistics {
     private final Animal animal;
     private String genome;
@@ -18,7 +16,7 @@ public class AnimalStatistics {
         this.animal = animal;
     }
 
-    public void updateStatistics(){
+    public void updateStatistics() {
         updateGenome();
         updateActiveGenome();
         updateCurrentEnergy();
@@ -28,32 +26,32 @@ public class AnimalStatistics {
         updateDeathDay();
     }
 
-    private void updateGenome(){
+    private void updateGenome() {
         genome = animal.getGenome().getGenomeStr();
     }
 
-    private void updateActiveGenome(){
+    private void updateActiveGenome() {
         activeGenome = animal.getGenome().currentGenome();
     }
 
-    private void updateCurrentEnergy(){
+    private void updateCurrentEnergy() {
         currentEnergy = animal.getEnergy();
     }
 
-    private void updateGrassEatenNum(){
+    private void updateGrassEatenNum() {
         grassEatenNum = animal.getGrassEatenNum();
     }
 
-    private void updateChildrenNum(){
+    private void updateChildrenNum() {
         childrenNum = animal.getChildrenNum();
     }
 
-    private void updateAge(){
+    private void updateAge() {
         age = animal.getLifeDays();
     }
 
-    private void updateDeathDay(){
-        if(animal.isAlive()){
+    private void updateDeathDay() {
+        if (animal.isAlive()) {
             deathDay = -1;
         } else {
             deathDay = age;
@@ -85,7 +83,7 @@ public class AnimalStatistics {
         return age;
     }
 
-    public int getDeathDay(){
+    public int getDeathDay() {
         return deathDay;
     }
 }

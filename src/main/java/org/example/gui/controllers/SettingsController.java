@@ -2,13 +2,10 @@ package org.example.gui.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +16,6 @@ import java.nio.file.Paths;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.example.settings.InvalidSettingsException;
 import org.example.settings.SimulationSettings;
@@ -83,7 +79,8 @@ public class SettingsController extends VBox {
     @FXML
     private Button startFromFileButton;
 
-    @FXML CheckBox csvCheckBox;
+    @FXML
+    CheckBox csvCheckBox;
 
     public SettingsController() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
@@ -213,7 +210,7 @@ public class SettingsController extends VBox {
 
         if (settings.getMoveEnergy() <= 0) {
             throw new InvalidSettingsException("Move energy cannot be non-positive");
-        } else if(settings.getMoveEnergy() > settings.getInitialEnergy()){
+        } else if (settings.getMoveEnergy() > settings.getInitialEnergy()) {
             throw new InvalidSettingsException("Move energy cannot be greater than initial energy");
         }
 
@@ -239,7 +236,7 @@ public class SettingsController extends VBox {
             throw new InvalidSettingsException("Genome length cannot be non-positive");
         }
 
-        if (settings.getStuffedEnergy() <= settings.getReproduceEnergy()){
+        if (settings.getStuffedEnergy() <= settings.getReproduceEnergy()) {
             throw new InvalidSettingsException("Stuffed energy cannot be less than reproduction energy");
         }
     }

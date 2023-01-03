@@ -94,8 +94,8 @@ public class SimulationEngine implements Runnable, ISimulationEngine {
 
             map.updateStatistics();
 
-            synchronized (this){
-                if(!isRunning){
+            synchronized (this) {
+                if (!isRunning) {
                     try {
                         wait();
                     } catch (InterruptedException e) {

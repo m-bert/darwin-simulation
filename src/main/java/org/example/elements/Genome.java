@@ -20,50 +20,49 @@ public class Genome {
         this.mutationVariant = mutationVariant;
     }
 
-    public void createRandomGenome(){
+    public void createRandomGenome() {
         currentIndex = 0;
 
-        for(int i = 0; i < genomeLength; i++){
+        for (int i = 0; i < genomeLength; i++) {
             genomes.add(generator.nextInt(8));
         }
     }
 
-    public int currentGenome(){
-        return genomes.get(currentIndex%genomes.size());
+    public int currentGenome() {
+        return genomes.get(currentIndex % genomes.size());
     }
 
-    public int next(){
-        int currentGenome = genomes.get(currentIndex%genomes.size());
+    public int next() {
+        int currentGenome = genomes.get(currentIndex % genomes.size());
         currentIndex++;
         return currentGenome;
     }
 
-    public void mutation(){
+    public void mutation() {
         int randomNumSize = generator.nextInt(genomeLength);
-        if(mutationVariant == MutationVariant.RANDOM){
+        if (mutationVariant == MutationVariant.RANDOM) {
             for (int i = 0; i < randomNumSize; i++) {
                 int randomIndex = generator.nextInt(genomeLength);
                 genomes.set(randomIndex, generator.nextInt(8));
             }
-        }
-        else{
+        } else {
             for (int i = 0; i < randomNumSize; i++) {
                 int randomIndex = generator.nextInt(genomeLength);
                 int oldValue = genomes.get(randomIndex);
                 int plusMinusOne = generator.nextBoolean() ? 1 : -1;
-                int newValue = (oldValue+plusMinusOne)%8;
-                if(abs(newValue-oldValue) < 2 && newValue >= 0) {
+                int newValue = (oldValue + plusMinusOne) % 8;
+                if (abs(newValue - oldValue) < 2 && newValue >= 0) {
                     genomes.set(randomIndex, newValue);
                 }
             }
         }
     }
 
-    public List<Integer> getLeftGenomePart(int index){
+    public List<Integer> getLeftGenomePart(int index) {
         return genomes.subList(0, index);
     }
 
-    public List<Integer> getRightGenomePart(int index){
+    public List<Integer> getRightGenomePart(int index) {
         return genomes.subList(index, genomeLength);
     }
 
@@ -75,10 +74,10 @@ public class Genome {
         this.genomes = genomes;
     }
 
-    public String getGenomeStr(){
+    public String getGenomeStr() {
         StringBuilder result = new StringBuilder();
 
-        for(int gen : genomes){
+        for (int gen : genomes) {
             result.append(gen);
         }
 

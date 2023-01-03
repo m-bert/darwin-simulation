@@ -2,9 +2,9 @@ package org.example.elements;
 
 import org.example.utils.Vector2D;
 
-public class Grass extends AbstractMapElement{
+public class Grass extends AbstractMapElement {
 
-    public Grass(Vector2D position){
+    public Grass(Vector2D position) {
         super(position);
     }
 

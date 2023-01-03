@@ -2,11 +2,10 @@ package org.example.gui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.example.elements.Animal;
 import org.example.elements.Grass;
 import org.example.elements.IMapElement;
@@ -30,12 +29,15 @@ public class SimulationController extends VBox implements ISimulationController 
     private final AnimalStatisticsBox animalStatisticBox;
     private final MapStatistics mapStatistics;
     private final IMap map;
-    private final int WIDTH, HEIGHT, CELL_SIZE;
+    private final int WIDTH, HEIGHT;
+    private final int CELL_SIZE = 15;
+    private final int CONTROLS_SIZE = 170;
     private final GUIElement[][] board;
     private final GridPane grid;
 
     private ISimulationEngine engine;
     private boolean isRunning;
+    private final Button pauseButton;
 
     public SimulationController(SimulationSettings settings, IMap map) {
         this.settings = settings;
@@ -43,7 +45,6 @@ public class SimulationController extends VBox implements ISimulationController 
         mapStatistics = map.getStatistics();
         WIDTH = settings.getMapWidth();
         HEIGHT = settings.getMapHeight();
-        CELL_SIZE = 20;
 
         isRunning = true;
         engine = null;
@@ -59,6 +60,8 @@ public class SimulationController extends VBox implements ISimulationController 
             throw new RuntimeException(exception);
         }
 
+        setAlignment(Pos.CENTER);
+
         // Set up board array
         board = new GUIElement[settings.getMapHeight()][settings.getMapWidth()];
         for (int i = 0; i < HEIGHT; ++i) {
@@ -70,6 +73,7 @@ public class SimulationController extends VBox implements ISimulationController 
         // Initialize grid
         grid = new GridPane();
         grid.setGridLinesVisible(true);
+        grid.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < WIDTH; ++i) {
             grid.getColumnConstraints().add(new ColumnConstraints(CELL_SIZE));
@@ -83,18 +87,25 @@ public class SimulationController extends VBox implements ISimulationController 
 
         getChildren().add(grid);
 
+        HBox statisticsHBox = new HBox();
+        statisticsHBox.setAlignment(Pos.CENTER);
+
         // Add statistics
         mapStatisticsBox = new MapStatisticsBox(mapStatistics);
-        getChildren().add(mapStatisticsBox);
+        statisticsHBox.getChildren().add(mapStatisticsBox);
 
         // Add pause button
-        Button button = new Button("Pause simulation");
-        button.setOnAction(this::pauseButtonClicked);
-        getChildren().add(button);
+        pauseButton = new Button("Pause simulation");
+        pauseButton.setOnAction(this::pauseButtonClicked);
 
         // Add animal statistics
         animalStatisticBox = new AnimalStatisticsBox();
-        getChildren().add(animalStatisticBox);
+        statisticsHBox.getChildren().add(animalStatisticBox);
+
+        getChildren().addAll(statisticsHBox, pauseButton);
+
+        setMinHeight(HEIGHT * CELL_SIZE + CONTROLS_SIZE);
+        setMinWidth(WIDTH * CELL_SIZE + CONTROLS_SIZE);
     }
 
     public void drawGrid() {
@@ -124,7 +135,7 @@ public class SimulationController extends VBox implements ISimulationController 
                 }
 
 
-                board[y][x] = new GUIElement(element, this ,CELL_SIZE);
+                board[y][x] = new GUIElement(element, this, CELL_SIZE);
             }
         }
 
@@ -139,15 +150,17 @@ public class SimulationController extends VBox implements ISimulationController 
         animalStatisticBox.updateStatistics();
     }
 
-    public void pauseButtonClicked(ActionEvent event){
-        if(engine == null){
+    public void pauseButtonClicked(ActionEvent event) {
+        if (engine == null) {
             return;
         }
 
-        if(isRunning){
+        if (isRunning) {
             engine.pause();
+            pauseButton.setText("Resume simulation");
         } else {
             engine.resume();
+            pauseButton.setText("Pause simulation");
         }
 
         isRunning = !isRunning;

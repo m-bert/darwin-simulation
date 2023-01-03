@@ -5,7 +5,7 @@ import java.util.Objects;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Vector2D{
+public class Vector2D {
     public final int x;
     public final int y;
 

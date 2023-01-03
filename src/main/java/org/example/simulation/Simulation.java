@@ -1,7 +1,5 @@
 package org.example.simulation;
 
-import com.google.gson.Gson;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -16,7 +14,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class Simulation extends Stage {
@@ -33,12 +30,12 @@ public class Simulation extends Stage {
         this.simulationSettings = simulationSettings;
         IMap map;
 
-        if(simulationSettings.isSaveEnabled()){
+        if (simulationSettings.isSaveEnabled()) {
             dataFilename = System.getProperty("user.home") + File.separator + "simulation" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()) + ".csv";
             File dataFile = new File(dataFilename);
 
             try {
-                if(dataFile.createNewFile()){
+                if (dataFile.createNewFile()) {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile));
                     writer.write("Animals;Plants;Free_places;Top_genomes;Average_energy;Average_lifetime");
                     writer.close();
